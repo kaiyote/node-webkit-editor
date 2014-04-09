@@ -1,0 +1,16 @@
+mix(color1, color2, weight)
+  weight = unit(weight || 50%, '')
+  
+  $p = weight / 100.0
+  $w = $p * 2 - 1
+  $a = alpha(color1) - alpha(color2)
+  
+  $w1 = ((($w * $a == -1) ? $w : ($w + $a) / (1 + $w * $a)) + 1) / 2.0
+  $w2 = 1 - $w1
+  
+  $red = red(color1) * $w1 + red(color2) * $w2
+  $green = green(color1) * $w1 + green(color2) * $w2
+  $blue = blue(color1) * $w1 + blue(color2) * $w2
+  $alpha = alpha(color1) * $p + alpha(color2) * (1 - $p)
+  
+  rgba($red, $green, $blue, $alpha)

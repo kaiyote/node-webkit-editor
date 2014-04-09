@@ -1,0 +1,15 @@
+**/.DS_Store
+.project
+.settings
+.idea
+
+node-webkit-editor
+manifest.mf
+build.xml
+npm-debug.log
+test/test-results.xml
+
+node_modules
+bower_components
+dist
+_public

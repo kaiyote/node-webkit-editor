@@ -1,0 +1,34 @@
+{
+  "author": "Timothy Huddle",
+  "name": "Yet-Another-Desktop-Polyglot-Editor",
+  "description": "Ace code editor on your desktop",
+  "version": "0.0.1",
+  "homepage": "",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "index.html",
+  "node-main": "",
+  "single-instance": true,
+  "chromium-args": "",
+  "dom_storage_quota": 1024,
+  "window": {
+    "title": "Yet Another Desktop Polyglot Editor",
+    "icon": "link.png",
+    "toolbar": false,
+    "frame": false,
+    "position": "center",
+    "width": 1024,
+    "height": 768,
+    "min_width": 1024,
+    "min_height": 768,
+    "resizable": true,
+    "always-on-top": false,
+    "fullscreen": false
+  },
+  "dependencies": {
+    "nedb": "~0.9.4"
+  }
+}

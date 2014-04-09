@@ -1,0 +1,146 @@
+@require '/node_modules/fluidity/lib/fluidity.styl'
+@require 'variables.styl'
+@require 'mixins.styl'
+@require 'functions.styl'
+
+*
+  box-sizing border-box
+  text-rendering optimizeLegibility
+
+html, body
+  height 100%
+
+body
+  overflow hidden
+  margin 0
+  padding 0
+  font-family 'Segoe UI', 'Lucida Sans', 'Droid Sans', 'Liberation Sans', sans-serif
+  display flex
+  flex-direction column
+  align-items stretch
+  align-content stretch
+
+.titlebar
+  -webkit-app-region drag
+  padding 4px 16px
+  toolbar $foreground, $background
+  flex 0 0 30px
+  
+  .toolbar, .window-controls
+    -webkit-app-region no-drag
+    
+  .app-name
+    margin-right 10px
+    padding-right 10px
+    border-right 1px solid $foreground
+    font-size 12px
+    
+  .window-controls
+    position absolute
+    top 0
+    right 0
+    bottom 0
+    display flex
+    align-content stretch
+    align-items baseline
+    padding 0 4px
+    
+    a
+      width 40px
+      display block
+      margin-left 1px
+      font-family monospace
+      font-size 18px
+      font-weight bold
+      text-align center
+      background mix($background, #888, 65%)
+      color mix($foreground, #888, 90%)
+      transition opacity .3s ease
+      opacity .8
+      cursor default
+      
+      &:hover
+        opacity 1
+        color $foreground
+      
+      &:last-child
+        background $accent
+        color $foreground
+        
+.central
+  display flex
+  flex-grow 1
+  align-items stretch
+  align-content stretch
+  
+  #editor
+    display flex
+    flex 0 0 auto
+    flex-grow 1
+        
+.bottom-bar
+  margin 0
+  padding 2px 5px
+  flex 0 0 auto
+  align-self flex-end
+  width 100%
+  display flex
+  justify-content space-between
+  align-content stretch
+  box-shadow: 0 -4px 4px rgba(0,0,0,.1)
+  toolbar $foreground, $background
+  font-size 12px
+  
+  .status-text
+    display flex
+    flex-flow column
+    justify-content center
+    
+  .devTools
+    display flex
+    justify-content center
+    flex 1 0 auto
+    
+    a
+      cursor default
+      padding-left 15px
+    
+  .mode-theme
+    position absolute
+    right 0
+    bottom 0
+    height 22px
+    
+    select
+      margin 0
+      border none
+      width 150px
+      background $background
+      color $foreground
+      -webkit-appearance none
+      height 22px
+      padding 0
+      border-radius 0
+    
+::-webkit-scrollbar
+  width 15px
+  height 15px
+
+::-webkit-scrollbar-button
+  width 0
+  height 0
+
+::-webkit-scrollbar-track
+  background-color transparent
+
+::-webkit-scrollbar-thumb
+  background-color mix($foreground, $background, 30%)
+  border 3px solid transparent
+  border-radius 6px
+  background-clip content-box
+  
+  &:hover
+    background-color mix($foreground, $background, 35%)
+
+::-webkit-scrollbar-corner
+  background-color mix($foreground, $background, 15%)
