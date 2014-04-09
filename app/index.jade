@@ -2,7 +2,6 @@
 html(lang='en', ng-app='app')
   head
     meta(charset='utf-8')
-    title Ace-Desktop
     link(rel='stylesheet', href='css/app.css')
     script.
       window.brunch = window.brunch || {};
@@ -11,25 +10,25 @@ html(lang='en', ng-app='app')
         enabled: true
       };
     script(src='js/vendor.js')
-    script(src='js/app.templates.js')
+    //script(src='js/app.templates.js')
     script(src='js/app.js')
   body
     .titlebar(ng-controller='TitlebarCtrl')
-      b.app-name Ace-Desktop
+      b.app-name Node Webkit Editor
       menubar
       .window-controls
         a(ng-click='minimize()') -
         a(ng-click='maximize()') +
-        a.close(ng-click='close()') ~
+        a(ng-click='close()') ~
     .central(ng-controller='EditorCtrl')
       #editor
     .bottom-bar(ng-controller='StatusCtrl')
-      .status-text lolz
+      .position lolz
       .devTools
         a(ng-click='reload()') Reload
         a(ng-click='showDevTools()') Show Dev Tools
-      .mode-theme
+      .selectors
         select.syntax(ng-model='mode', tabindex='-1')
-          option(ng-repeat="mode in modes", value="{{mode.mode}}") {{mode.caption}}
+          option(ng-repeat="mode in modes", value="{{mode.mode}}", ng-selected="$first") {{mode.caption}}
         select.theme(ng-model='theme', tabindex='-1')
-          option(ng-repeat="theme in themes", value="{{theme.theme}}") {{theme.caption}}
+          option(ng-repeat="theme in themes", value="{{theme.theme}}", ng-selected="$first") {{theme.caption}}

@@ -24,15 +24,14 @@ angular.module 'app.controllers', []
 .controller 'EditorCtrl', [
   '$scope'
   ($scope) ->
-    editor = ace.edit "editor"
-    editor.setOptions
-      packaged: false
+    $scope.editor = ace.edit "editor"
+    $scope.editor.getSession().setUseWorker false
     
     $scope.$on 'themeChange', (event, arg) ->
-      editor.setTheme arg
+      $scope.editor.setTheme arg
       
     $scope.$on 'modeChange', (event, arg) ->
-      editor.getSession().setMode arg
+      $scope.editor.getSession().setMode arg
 ]
 
 .controller 'StatusCtrl', [
