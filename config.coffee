@@ -33,6 +33,3 @@ exports.config =
     jade_angular:
       modules_folder: 'partials'
       locals: {}
-
-  # Enable or disable minifying of result js / css files.
-  minify: true

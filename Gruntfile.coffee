@@ -16,6 +16,18 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['nodewebkit']
   
+  grunt.registerTask 'fixWorkers', 'Copy all of the ace worker.js files into app/assets so that they will get copied to _public and work', () ->
+    grunt.file.copy file, "app/assets/js/workers/#{file.split('/')[-1..-1]}" for file in [
+            "bower_components/ace-builds/src-noconflict/worker-coffee.js"
+            "bower_components/ace-builds/src-noconflict/worker-css.js"
+            "bower_components/ace-builds/src-noconflict/worker-html.js"
+            "bower_components/ace-builds/src-noconflict/worker-javascript.js"
+            "bower_components/ace-builds/src-noconflict/worker-json.js"
+            "bower_components/ace-builds/src-noconflict/worker-lua.js"
+            "bower_components/ace-builds/src-noconflict/worker-php.js"
+            "bower_components/ace-builds/src-noconflict/worker-xquery.js"
+          ]
+  
   grunt.registerTask 'fixAce', 'Add all the files we need from Ace so they get concatenated with vendor.js', () ->
     aceBower = grunt.file.readJSON 'bower_components/ace-builds/.bower.json'
     aceBower.main = [
@@ -179,13 +191,5 @@ module.exports = (grunt) ->
             "./src-noconflict/theme-twilight.js"
             "./src-noconflict/theme-vibrant_ink.js"
             "./src-noconflict/theme-xcode.js"
-            "./src-noconflict/worker-coffee.js"
-            "./src-noconflict/worker-css.js"
-            "./src-noconflict/worker-html.js"
-            "./src-noconflict/worker-javascript.js"
-            "./src-noconflict/worker-json.js"
-            "./src-noconflict/worker-lua.js"
-            "./src-noconflict/worker-php.js"
-            "./src-noconflict/worker-xquery.js"
           ]
     grunt.file.write 'bower_components/ace-builds/.bower.json', JSON.stringify aceBower, null, '\t'

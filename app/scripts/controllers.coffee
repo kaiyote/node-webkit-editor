@@ -25,7 +25,7 @@ angular.module 'app.controllers', []
   '$scope'
   ($scope) ->
     $scope.editor = ace.edit "editor"
-    $scope.editor.getSession().setUseWorker false
+    ace.config.set 'workerPath', 'js/workers'
     
     $scope.$on 'themeChange', (event, arg) ->
       $scope.editor.setTheme arg
