@@ -18,7 +18,7 @@ html(lang='en', ng-app='app')
       menubar
       .window-controls
         a(ng-click='minimize()') -
-        a(ng-click='maximize()') +
+        a(ng-click='maximize()') {{maximized ? '&or;' : '&and;'}}
         a(ng-click='close()') ~
     .central(ng-controller='EditorCtrl')
       #editor

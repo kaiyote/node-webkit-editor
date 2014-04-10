@@ -24,14 +24,14 @@ angular.module 'app.controllers', []
 .controller 'EditorCtrl', [
   '$scope'
   ($scope) ->
-    $scope.editor = ace.edit "editor"
+    editor = ace.edit "editor"
     ace.config.set 'workerPath', 'js/workers'
     
     $scope.$on 'themeChange', (event, arg) ->
-      $scope.editor.setTheme arg
+      editor.setTheme arg
       
     $scope.$on 'modeChange', (event, arg) ->
-      $scope.editor.getSession().setMode arg
+      editor.getSession().setMode arg
 ]
 
 .controller 'StatusCtrl', [
@@ -50,8 +50,8 @@ angular.module 'app.controllers', []
       do nodeWindow.reloadIgnoringCache
       
     $scope.$watch 'theme', (newVal, oldVal) ->
-      $rootScope.$broadcast 'themeChange', newVal
+      $rootScope.$broadcast 'themeChange', newVal unless newVal is oldVal
       
     $scope.$watch 'mode', (newVal, oldVal) ->
-      $rootScope.$broadcast 'modeChange', newVal
+      $rootScope.$broadcast 'modeChange', newVal unless newVal is oldVal
 ]
