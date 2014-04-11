@@ -23,8 +23,10 @@ angular.module 'app.controllers', []
 
 .controller 'EditorCtrl', [
   '$scope'
-  ($scope) ->
-    editor = ace.edit "editor"
+  '$rootScope'
+  ($scope, $rootScope) ->
+    fs = require 'fs'
+    editor = ace.edit 'editor'
     ace.config.set 'workerPath', 'js/workers'
     
     $scope.$on 'themeChange', (event, arg) ->
@@ -32,6 +34,27 @@ angular.module 'app.controllers', []
       
     $scope.$on 'modeChange', (event, arg) ->
       editor.getSession().setMode arg
+      
+    openFile = document.querySelector '#openFile'
+    saveFile = document.querySelector '#saveFile'
+    
+    openFile.addEventListener 'change', (evt) ->
+      editor.path = this.value
+      fs.readFile editor.path, null, (err, data) ->
+        if !err
+          editor.setValue '' + data
+          do editor.navigateFileStart
+          if (mode = ace.require('ace/ext/modelist').getModeForPath(editor.path)) != null
+            $rootScope.$broadcast 'changeMode', mode.mode
+        else
+          alert err
+    , false
+    
+    saveFile.addEventListener 'change', (evt) ->
+      fs.writeFile this.value, editor.getValue()
+    , false
+    
+    editor.commands.addCommand command for command in commands
 ]
 
 .controller 'StatusCtrl', [
@@ -54,4 +77,7 @@ angular.module 'app.controllers', []
       
     $scope.$watch 'mode', (newVal, oldVal) ->
       $rootScope.$broadcast 'modeChange', newVal unless newVal is oldVal
+      
+    $scope.$on 'changeMode', (event, arg) ->
+      $scope.$apply($scope.mode = arg)
 ]

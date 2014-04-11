@@ -1,4 +1,4 @@
-!!! 5
+doctype html
 html(lang='en', ng-app='app')
   head
     meta(charset='utf-8')
@@ -20,7 +20,7 @@ html(lang='en', ng-app='app')
         a(ng-click='minimize()') -
         a(ng-click='maximize()') {{maximized ? '&or;' : '&and;'}}
         a(ng-click='close()') ~
-    .central(ng-controller='EditorCtrl')
+    .holder(ng-controller='EditorCtrl')
       #editor
     .bottom-bar(ng-controller='StatusCtrl')
       .position lolz
@@ -32,3 +32,5 @@ html(lang='en', ng-app='app')
           option(ng-repeat="mode in modes", value="{{mode.mode}}", ng-selected="$first") {{mode.caption}}
         select.theme(ng-model='theme', tabindex='-1')
           option(ng-repeat="theme in themes", value="{{theme.theme}}", ng-selected="$first") {{theme.caption}}
+    input#openFile(type='file')
+    input#saveFile(type='file', nwsaveas)
