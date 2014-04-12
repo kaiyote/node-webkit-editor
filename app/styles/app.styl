@@ -67,7 +67,14 @@ input
         color $foreground
         
       &:nth-child(2)
-        font-size 14px
+        font-size 18px
+        
+        div
+          transition -webkit-transform .6s ease
+          transform rotate(0deg)
+        
+        &.maximized > div
+          transform rotate(180deg)
       
       &:last-child
         background $accent
@@ -76,6 +83,7 @@ input
 .holder
   display flex
   flex-grow 1
+  flex-flow column
   align-items stretch
   align-content stretch
   
@@ -83,6 +91,10 @@ input
     display flex
     flex 0 0 auto
     flex-grow 1
+    
+  .tab-bar
+    display flex
+    flex 0 0 30px
         
 .bottom-bar
   margin 0
@@ -96,6 +108,7 @@ input
   box-shadow: 0 -4px 4px rgba(0,0,0,.1)
   toolbar $foreground, $background
   font-size 12px
+  flex-grow 0
   
   .position
     display flex
