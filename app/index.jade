@@ -12,7 +12,7 @@ html(lang='en', ng-app='app')
     script(src='js/vendor.js')
     //script(src='js/app.templates.js')
     script(src='js/app.js')
-  body
+  body(ng-controller='EditorCtrl')
     .titlebar(ng-controller='TitlebarCtrl')
       b.app-name Node Webkit Editor
       menubar
@@ -20,9 +20,9 @@ html(lang='en', ng-app='app')
         a(ng-click='minimize()') -
         a(ng-click='maximize()', ng-class="{maximized: maximized}"): div &and;
         a(ng-click='close()') ~
-    .holder(ng-controller='EditorCtrl')
+    .holder
       #editor
-    .bottom-bar(ng-controller='StatusCtrl')
+    .bottom-bar
       .position lolz
       .devTools
         a(ng-click='reload()') Reload
