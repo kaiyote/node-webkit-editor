@@ -88,7 +88,7 @@ angular.module 'app.controllers', []
       path = this.value
       fs.readFile path, null, (err, data) ->
         if !err
-          loadFile '' + data, path, true
+          editor.loadFile '' + data, path, true
         else
           alert err
     
