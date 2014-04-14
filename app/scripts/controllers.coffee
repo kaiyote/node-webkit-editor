@@ -36,7 +36,11 @@ angular.module 'app.controllers', []
     Path = require 'path'
     nodeWindow = require('nw.gui').Window.get()
     
-    sessionPath = Path.join process.env.home, '.nweditor', 'session.json'
+    if process.platform == 'win32'
+      homeVar = 'USERPROFILE'
+    else
+      homeVar = 'HOME'
+    sessionPath = Path.join process.env[homeVar], '.nweditor', 'session.json'
     state = {}
     editors = []
     
@@ -63,10 +67,14 @@ angular.module 'app.controllers', []
         fs.mkdirSync Path.dirname sessionPath
       fs.writeFileSync sessionPath, JSON.stringify state
     
-    loadFile = (content, path, save) ->
+    editor.loadFile = (content, path, save) ->
       editor.path = path
       editor.setValue content
       do editor.navigateFileStart
+      editor.watcher = fs.watch path, (event, filename) ->
+        if confirm "File has changed outside of this program. Do you want to reload?"
+          do editor.watcher.close
+          editor.loadFile '' + fs.readFileSync(path), path
       mode = modes.getModeForPath path
       $scope.$apply $scope.mode = mode.mode
       if save
@@ -113,7 +121,7 @@ angular.module 'app.controllers', []
         if state.theme
           $scope.$apply $scope.theme = state.theme
         if state.file
-          loadFile '' + fs.readFileSync(state.file), state.file
+          editor.loadFile '' + fs.readFileSync(state.file), state.file
       catch e
         #no state to load, don't do anything
 ]
