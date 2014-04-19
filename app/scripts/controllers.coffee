@@ -42,7 +42,6 @@ angular.module 'app.controllers', []
       homeVar = 'HOME'
     sessionPath = Path.join process.env[homeVar], '.nweditor', 'session.json'
     state = {}
-    editors = []
     
     $scope.themes = ace.require('ace/ext/themelist').themes
     modes = ace.require 'ace/ext/modelist'
