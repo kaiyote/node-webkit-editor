@@ -40,8 +40,9 @@ angular.module 'app.controllers', []
       homeVar = 'USERPROFILE'
     else
       homeVar = 'HOME'
-    sessionPath = Path.join process.env[homeVar], '.nweditor', 'session.json'
+    sessionPath = Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'session.json'
     state = {}
+    sessions = []
     
     $scope.themes = ace.require('ace/ext/themelist').themes
     modes = ace.require 'ace/ext/modelist'
@@ -67,14 +68,23 @@ angular.module 'app.controllers', []
       fs.writeFileSync sessionPath, JSON.stringify state
     
     editor.loadFile = (content, path, save) ->
-      editor.path = path
-      editor.setValue content
-      do editor.navigateFileStart
-      editor.watcher = fs.watch path, (event, filename) ->
-        if confirm "File has changed outside of this program. Do you want to reload?"
-          do editor.watcher.close
-          editor.loadFile '' + fs.readFileSync(path), path
       mode = modes.getModeForPath path
+      try
+        session = new ace.EditSession content, mode
+      catch
+        #something weird is going on, the first attempt to make an EditSession always fails because it can't call "split" on undefined
+        #no idea why, but the second attempt works
+        session = new ace.EditSession content, mode
+      session.path = path
+      session.watcher = fs.watch path, (event, filename) ->
+        if confirm "File has changed outside of this program. Do you want to reload?"
+          do session.watcher.close
+          editor.loadFile '' + fs.readFileSync(path), path
+          
+      sessions.push session
+      editor.setSession session
+      do editor.navigateFileStart
+      
       $scope.$apply $scope.mode = mode.mode
       if save
         state.file = path
@@ -92,9 +102,10 @@ angular.module 'app.controllers', []
           alert err
     
     saveAsListener = (evt) ->
+      session = do editor.getSession
       fs.writeFile this.value, editor.getValue()
       #update editor path and state
-      editor.path = state.file = this.value
+      session.path = state.file = this.value
       do writeState
     
     #ensure we don't keep attaching the same even listener repeatedly

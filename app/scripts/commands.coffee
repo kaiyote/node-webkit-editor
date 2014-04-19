@@ -13,12 +13,13 @@ commands = [
     mac: 'Command-S'
   exec: (editor) ->
     fs = require 'fs'
-    do editor.watcher.close
-    fs.writeFile editor.path, editor.getValue(), () ->
-      editor.watcher = fs.watch editor.path, (event, filename) ->
+    session = do editor.getSession
+    do session.watcher.close
+    fs.writeFile session.path, editor.getValue(), () ->
+      session.watcher = fs.watch session.path, (event, filename) ->
         if confirm "File has changed outside of this program. Do you want to reload?"
-          do editor.watcher.close
-          editor.loadFile '' + fs.readFileSync(editor.path), editor.path
+          do session.watcher.close
+          editor.loadFile '' + fs.readFileSync(session.path), session.path
   readOnly: false
 ,
   name: 'saveAs'
