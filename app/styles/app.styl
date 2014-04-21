@@ -89,8 +89,23 @@ input
   .tabs
     display flex
     flex 0 0 30px
-    background $background
+    background linear-gradient(to bottom, color2, mix(color2, #888, 90%))
     flex-flow row
+    
+    .tab
+      border 1px solid $accent
+      color $foreground
+      font-size 12px
+      padding 0 4px
+      border-radius 10px 10px 0 0
+      vertical-align middle
+      line-height 28px
+      display flex
+      flex-flow row
+      
+      .status
+        width 16px
+        height 16px
   
   #editor
     display flex

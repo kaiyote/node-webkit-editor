@@ -5,11 +5,17 @@ angular.module 'app.directives', [
 ]
 .directive 'tabs', () ->
   restrict: 'E'
-  template: '<div repeat="session in sessions">'
   scope:
-    sessions: '@sessions'
-    editor: '@editor'
+    sessions: '=sessions'
+    editor: '=editor'
+  template: '<div ng-repeat="session in sessions" class="tab">' +
+              '<span>{{filename(session.path)}}</span>' +
+              '<div class="status">' +
+              '</div>' +
+            '</div>'
+  replace: true
   link: (scope, element, attrs) ->
-    scope.activate = (tab) ->
-      ''
-  
+    path = require 'path'
+    
+    scope.filename = (index) ->
+      path.basename index
