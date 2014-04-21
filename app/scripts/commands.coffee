@@ -17,9 +17,8 @@ commands = [
     do session.watcher.close
     fs.writeFile session.path, editor.getValue(), () ->
       session.watcher = fs.watch session.path, (event, filename) ->
-        if confirm "File has changed outside of this program. Do you want to reload?"
-          do session.watcher.close
-          editor.loadFile '' + fs.readFileSync(session.path), session.path
+        do session.watcher.close
+        editor.loadFile '' + fs.readFileSync(session.path), session.path
   readOnly: false
 ,
   name: 'saveAs'

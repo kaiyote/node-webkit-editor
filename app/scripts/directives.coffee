@@ -8,10 +8,10 @@ angular.module 'app.directives', [
   scope:
     sessions: '=sessions'
     editor: '=editor'
-  template: '<div ng-repeat="session in sessions" class="tab">' +
+  template: '<div ng-repeat="session in sessions" class="tab active">' +
               '<span>{{filename(session.path)}}</span>' +
-              '<div class="status">' +
-              '</div>' +
+              '<a class="status">x' +
+              '</a>' +
             '</div>'
   replace: true
   link: (scope, element, attrs) ->
