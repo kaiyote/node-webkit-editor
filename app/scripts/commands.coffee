@@ -14,7 +14,7 @@ commands = [
   exec: (editor) ->
     fs = require 'fs'
     session = do editor.getSession
-    do session.watcher.close
+    do session.watcher?.close
     fs.writeFile session.path, editor.getValue(), () ->
       session.watcher = fs.watch session.path, (event, filename) ->
         do session.watcher.close

@@ -66,18 +66,21 @@ angular.module 'app.controllers', []
     $scope.editor.loadFile = (content, path, save) ->
       mode = modes.getModeForPath path
       try
-        if !(session = _.find $scope.sessions, (session) -> session.path is path)?
+        session = _.find $scope.sessions, (session) -> session.path is path
+        if !session?
           session = new ace.EditSession content, mode
       catch
         #something weird is going on, the first attempt to make an EditSession always fails because it can't call "split" on undefined
         #no idea why, but the second attempt works
         session = new ace.EditSession content, mode
       session.path = path
+      # close any file watcher we currently have
+      do session.watcher?.close
       session.watcher = fs.watch path, (event, filename) ->
         do session.watcher.close
         $scope.editor.loadFile '' + fs.readFileSync(path), path
-          
-      $scope.sessions.push session
+      
+      $scope.sessions.push session unless _.find $scope.sessions, (innerSession) -> innerSession.path is session.path
       $scope.editor.setSession session
       do $scope.editor.navigateFileStart
       
