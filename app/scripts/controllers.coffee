@@ -37,7 +37,7 @@ angular.module 'app.controllers', []
     nodeWindow = require('nw.gui').Window.get()
     
     sessionPath = Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'session.json'
-    state = {}
+    state = {files: []}
     $scope.sessions = []
     
     $scope.themes = ace.require('ace/ext/themelist').themes
@@ -66,7 +66,7 @@ angular.module 'app.controllers', []
     $scope.editor.loadFile = (content, path, save) ->
       mode = modes.getModeForPath path
       try
-        session = _.find $scope.sessions, (session) -> session.path is path
+        session = _.find $scope.sessions, (session) -> session.path is path or session.path is 'untitled.txt'
         if !session?
           session = new ace.EditSession content, mode
       catch
@@ -84,10 +84,17 @@ angular.module 'app.controllers', []
       $scope.editor.setSession session
       do $scope.editor.navigateFileStart
       
+      $scope.$apply $scope.mode = ''
       $scope.$apply $scope.mode = mode.mode
       if save
-        state.file = path
+        state.files.push path
         do writeState
+        
+    $scope.editor.newFile = () ->
+      session = new ace.EditSession '', 'ace/mode/text'
+      session.path = 'untitled.txt'
+      $scope.editor.setSession session
+      $scope.$apply $scope.sessions.push session
       
     openFile = document.querySelector '#openFile'
     saveFile = document.querySelector '#saveFile'
@@ -104,7 +111,9 @@ angular.module 'app.controllers', []
       session = do $scope.editor.getSession
       fs.writeFile this.value, $scope.editor.getValue()
       #update editor path and state
-      session.path = state.file = this.value
+      session.path = this.value
+      state.files = _.reject state.files, (file) -> file is session.path
+      state.files.push this.value
       do writeState
     
     #ensure we don't keep attaching the same even listener repeatedly
@@ -121,7 +130,7 @@ angular.module 'app.controllers', []
         do writeState
       
     $scope.$watch 'mode', (newVal, oldVal) ->
-      $scope.editor.getSession().setMode newVal unless newVal is oldVal
+      $scope.editor.getSession().setMode newVal unless newVal is oldVal or newVal is ''
     
     nodeWindow.removeAllListeners 'on'
     nodeWindow.on 'loaded', () ->
@@ -129,11 +138,35 @@ angular.module 'app.controllers', []
         state = JSON.parse '' + fs.readFileSync sessionPath
         if state.theme
           $scope.$apply $scope.theme = state.theme
-        if state.file
-          $scope.editor.loadFile '' + fs.readFileSync(state.file), state.file
+        if state.files.length
+          $scope.editor.loadFile '' + fs.readFileSync(file), file for file in state.files
+        else
+          do $scope.editor.newFile
       catch e
-        #no state to load, don't do anything
+        do $scope.editor.newFile
         
     nodeWindow.on 'loading', () ->
       do session?.watcher?.close for session in $scope.sessions
+      
+    $scope.$on 'modeChange', (evt, args) ->
+      $scope.mode = args
+      
+    $scope.$on 'closeSession', (evt, args) ->
+      do args.watcher?.close
+      $scope.sessions = _.filter $scope.sessions, (session) ->
+        session.path isnt args.path
+      if $scope.editor.getSession().path is args.path
+        if $scope.sessions?.length isnt 0
+          $scope.editor.setSession _.last($scope.sessions)
+        else
+          do $scope.editor.newFile
+        
+      $scope.mode = ''
+      $scope.mode = session.$mode.$id
+      
+      state.files = _.chain $scope.sessions
+                      .where (session) -> session.path isnt 'untitled.txt'
+                      .pluck 'path'
+                      .value()
+      do writeState
 ]

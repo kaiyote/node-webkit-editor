@@ -94,29 +94,35 @@ input
     cursor default
     
     .tab
-      color $foreground
-      background mix($background, #888, 80%)
+      color mix($foreground, $background, 70%)
+      background linear-gradient(to bottom, mix($background, #888, 70%), mix($background, #888, 75%))
       font-size 12px
-      padding 0 4px
       margin 0 4px
       vertical-align middle
       line-height 28px
       display flex
       flex-flow row
       
+      span
+        flex-grow 1
+        padding 0 10px
+      
       &.active
         border-bottom solid 5px $accent
+        background linear-gradient(to bottom, mix($background, #888, 75%), mix($background, #888, 85%))
+        color $foreground
         
         .status
           color $accent
       
       .status
-        width 16px
-        height 16px
-        margin-left 10px
         font-size 14px
-        line-height 26px
-        z-index 2
+        padding 0 2px
+        margin-right 8px
+        vertical-align middle
+        
+        &:hover
+          color $foreground
   
   #editor
     display flex

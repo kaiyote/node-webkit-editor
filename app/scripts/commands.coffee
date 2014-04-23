@@ -14,11 +14,14 @@ commands = [
   exec: (editor) ->
     fs = require 'fs'
     session = do editor.getSession
-    do session.watcher?.close
-    fs.writeFile session.path, editor.getValue(), () ->
-      session.watcher = fs.watch session.path, (event, filename) ->
-        do session.watcher.close
-        editor.loadFile '' + fs.readFileSync(session.path), session.path
+    unless session.path is 'untitled.txt'
+      do session.watcher?.close
+      fs.writeFile session.path, editor.getValue(), () ->
+        session.watcher = fs.watch session.path, (event, filename) ->
+          do session.watcher.close
+          editor.loadFile '' + fs.readFileSync(session.path), session.path
+    else
+      document.querySelector('#saveFile').click()
   readOnly: false
 ,
   name: 'saveAs'
@@ -28,4 +31,12 @@ commands = [
   exec: (editor) ->
     document.querySelector('#saveFile').click()
   readOnly: false
+,
+  name: 'newFile'
+  bindKey:
+    win: 'Ctrl-N'
+    mac: 'Command-N'
+  exec: (editor) ->
+    do editor.newFile
+  readOnly: true
 ]
