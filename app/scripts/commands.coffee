@@ -39,4 +39,12 @@ commands = [
   exec: (editor) ->
     do editor.newFile true
   readOnly: false
+,
+  name: 'addDirectory'
+  bindKey:
+    win: 'Ctrl-.'
+    mac: 'Command-.'
+  exec: (editor) ->
+    document.querySelector('#addDirectory').click()
+  readOnly: true
 ]

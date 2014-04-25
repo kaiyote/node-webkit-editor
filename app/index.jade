@@ -21,9 +21,13 @@ html(lang='en', ng-app='app')
         a(ng-click='maximize()', ng-class="{maximized: maximized}"): div &and;
         a(ng-click='close()') ~
     .holder
-      .tabs
-        tabs(sessions='sessions', editor='editor')
-      #editor
+      #project(ng-controller='ProjectCtrl', ng-class="{collapsed: collapsed}", ng-mouseenter="collapsed = false", ng-mouseleave="collapsed = true")
+        .project-name node-webkit-editor
+        .tree hey there
+      .container
+        .tabs
+          tabs(sessions='sessions', editor='editor')
+        #editor
     .bottom-bar
       .position lolz
       .devTools
@@ -36,3 +40,4 @@ html(lang='en', ng-app='app')
           option(ng-repeat="theme in themes", value="{{theme.theme}}", ng-selected="$first") {{theme.caption}}
     input#openFile(type='file')
     input#saveFile(type='file', nwsaveas)
+    input#addDirectory(type='file', nwdirectory)

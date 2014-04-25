@@ -9,6 +9,7 @@
 
 html, body
   height 100%
+  -webkit-user-select none
 
 body
   overflow hidden
@@ -20,7 +21,7 @@ body
   align-items stretch
   align-content stretch
   
-input
+input[type='file']
   display none
 
 .titlebar
@@ -42,7 +43,6 @@ input
     position absolute
     top 0
     right 0
-    bottom 0
     display flex
     align-content stretch
     align-items baseline
@@ -50,7 +50,6 @@ input
     
     a
       width 40px
-      display block
       margin-left 1px
       font-family monospace
       font-size 18px
@@ -84,50 +83,89 @@ input
   flex-grow 1
   align-items stretch
   align-content stretch
-  flex-flow column
+  flex-flow row
   
-  .tabs
+  #project
     display flex
-    flex 0 0 30px
-    background linear-gradient(to bottom, mix($background, #888, 80%), mix($background, #888, 50%))
-    flex-flow row
-    cursor default
+    flex 0 0 200px
+    background linear-gradient(to right, mix($background, $foreground, 85%), mix($background, $foreground, 80%))
+    color mix($foreground, $background, 80%)
+    flex-flow column
+    align-items baseline
+    transition flex .5s ease
     
-    .tab
-      color mix($foreground, $background, 70%)
-      background linear-gradient(to bottom, mix($background, #888, 70%), mix($background, #888, 75%))
-      font-size 12px
-      margin 0 2px
-      vertical-align middle
-      line-height 28px
+    &.collapsed
+      flex 0 1 20px
+      
+      .project-name
+        width 0
+        opacity 0
+      
+      .tree
+        width 0
+        opacity 0
+      
+    .project-name
       display flex
+      flex 0 1 auto
+      opacity 1
+      white-space nowrap
+      transition width, opacity .5s ease
+          
+    .tree
+      display flex
+      flex 1 0 auto
+      opacity 1
+      white-space nowrap
+      transition width, opacity .5s ease
+  
+  .container
+    display flex
+    flex 1 0 auto
+    flex-flow column
+  
+    #editor
+      display flex
+      flex 1 0 auto
+      flex-flow column
+    
+    .tabs
+      display flex
+      flex 0 0 30px
+      background linear-gradient(to bottom, mix($background, #888, 80%), mix($background, #888, 50%))
       flex-flow row
+      cursor default
       
-      span
-        flex-grow 1
-        padding 0 10px
-      
-      &.active
-        border-bottom solid 5px $accent
-        background linear-gradient(to bottom, mix($background, #888, 75%), mix($background, #888, 85%))
-        color $foreground
+      .tab
+        color mix($foreground, $background, 70%)
+        background linear-gradient(to bottom, mix($background, #888, 70%), mix($background, #888, 75%))
+        font-size 12px
+        margin 0 2px
+        vertical-align middle
+        line-height 28px
+        display flex
+        flex-flow row
+        
+        span
+          flex-grow 1
+          padding 0 10px
+        
+        &.active
+          border-bottom solid 5px $accent
+          background linear-gradient(to bottom, mix($background, #888, 75%), mix($background, #888, 85%))
+          color $foreground
+          
+          .status
+            color $accent
         
         .status
-          color $accent
-      
-      .status
-        font-size 14px
-        padding 0 2px
-        margin-right 8px
-        vertical-align middle
-        
-        &:hover
-          color $foreground
-  
-  #editor
-    display flex
-    flex 0 0 auto
-    flex-grow 1
+          font-size 14px
+          padding 0 2px
+          margin-right 8px
+          vertical-align middle
+          
+          &:hover
+            color $foreground
         
 .bottom-bar
   margin 0

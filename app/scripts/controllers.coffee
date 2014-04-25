@@ -31,13 +31,13 @@ angular.module 'app.controllers', []
 .controller 'EditorCtrl', [
   '$scope'
   '$rootScope'
-  ($scope, $rootScope) ->
+  'Session'
+  ($scope, $rootScope, Session) ->
     fs = require 'fs'
     Path = require 'path'
     nodeWindow = require('nw.gui').Window.get()
     
     sessionPath = Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'session.json'
-    state = {files: []}
     $scope.sessions = []
     
     $scope.themes = ace.require('ace/ext/themelist').themes
@@ -54,14 +54,6 @@ angular.module 'app.controllers', []
       
     $scope.reload = ->
       do nodeWindow.reloadIgnoringCache
-    
-    writeState = ->
-      try
-        fs.readdirSync Path.dirname sessionPath
-      catch
-        #doesn't exist, so make it
-        fs.mkdirSync Path.dirname sessionPath
-      fs.writeFileSync sessionPath, JSON.stringify state
     
     $scope.editor.loadFile = (content, path, save) ->
       mode = modes.getModeForPath path
@@ -91,8 +83,8 @@ angular.module 'app.controllers', []
       $scope.$apply $scope.mode = ''
       $scope.$apply $scope.mode = mode.mode
       if save
-        state.files.push path
-        do writeState
+        Session.state.files.push path
+        do Session.writeSession
         
     $scope.editor.newFile = (apply) ->
       session = new ace.EditSession '', 'ace/mode/text'
@@ -122,9 +114,9 @@ angular.module 'app.controllers', []
       fs.writeFile this.value, $scope.editor.getValue()
       #update editor path and state
       session.path = this.value
-      state.files = _.reject state.files, (file) -> file is session.path
-      state.files.push this.value
-      do writeState
+      Session.state.files = _.reject Session.state.files, (file) -> file is session.path
+      Session.state.files.push this.value
+      do Session.writeSession
     
     #ensure we don't keep attaching the same even listener repeatedly
     openFile.removeEventListener 'change', openListener, false
@@ -136,8 +128,8 @@ angular.module 'app.controllers', []
     $scope.$watch 'theme', (newVal, oldVal) ->
       unless newVal is oldVal
         $scope.editor.setTheme newVal
-        state.theme = newVal
-        do writeState
+        Session.state.theme = newVal
+        do Session.writeSession
       
     $scope.$watch 'mode', (newVal, oldVal) ->
       $scope.editor.getSession().setMode newVal unless newVal is oldVal or newVal is ''
@@ -145,11 +137,10 @@ angular.module 'app.controllers', []
     nodeWindow.removeAllListeners 'on'
     nodeWindow.on 'loaded', () ->
       try
-        state = JSON.parse '' + fs.readFileSync sessionPath
-        if state.theme
-          $scope.$apply $scope.theme = state.theme
-        if state.files.length
-          $scope.editor.loadFile '' + fs.readFileSync(file), file for file in state.files
+        if Session.state.theme
+          $scope.$apply $scope.theme = Session.state.theme
+        if Session.state.files.length
+          $scope.editor.loadFile '' + fs.readFileSync(file), file for file in Session.state.files
         else
           $scope.editor.newFile true
       catch e
@@ -174,9 +165,27 @@ angular.module 'app.controllers', []
       $scope.mode = ''
       $scope.mode = $scope.editor.getSession().$mode.$id
       
-      state.files = _.chain $scope.sessions
+      Session.state.files = _.chain $scope.sessions
                       .where (session) -> session.path isnt 'untitled.txt'
                       .pluck 'path'
                       .value()
-      do writeState
+      do Session.writeSession
+]
+
+.controller 'ProjectCtrl', [
+  '$scope'
+  '$rootScope'
+  'Session'
+  ($scope, $rootScope, Session) ->
+    $scope.collapsed = true
+    
+    addDirectory = document.querySelector '#addDirectory'
+    
+    addListener = (evt) ->
+      projectPath = this.value
+      Session.state.paths.push projectPath unless _.find Session.state.paths, (sessionPath) -> sessionPath is projectPath
+      do Session.writeSession
+      
+    addDirectory.removeEventListener 'change', addListener, false
+    addDirectory.addEventListener 'change', addListener, false
 ]
