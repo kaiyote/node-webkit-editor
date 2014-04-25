@@ -10,7 +10,7 @@ angular.module 'app.directives', [
     scope:
       sessions: '=sessions'
       editor: '=editor'
-    template: '<div ng-repeat="session in sessions" class="tab" ng-class="{active: $last}">' +
+    template: '<div ng-repeat="session in sessions" class="tab" ng-class="{active: isActive(session.path)}">' +
                 '<span ng-click="update(session)" data-text="{{filename(session.path)}}">{{filename(session.path)}}</span>' +
                 '<a class="status" ng-click="close(session)">x</a>' +
               '</div>'
@@ -32,4 +32,7 @@ angular.module 'app.directives', [
         
       scope.close = (session) ->
         $rootScope.$broadcast 'closeSession', session
+        
+      scope.isActive = (file) ->
+        scope.editor.getSession().path is file
 ]

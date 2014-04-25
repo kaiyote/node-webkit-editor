@@ -37,6 +37,6 @@ commands = [
     win: 'Ctrl-N'
     mac: 'Command-N'
   exec: (editor) ->
-    do editor.newFile
-  readOnly: true
+    do editor.newFile true
+  readOnly: false
 ]

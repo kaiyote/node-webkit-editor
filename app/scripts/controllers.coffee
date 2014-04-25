@@ -69,6 +69,9 @@ angular.module 'app.controllers', []
         session = _.find $scope.sessions, (session) -> session.path is path or session.path is 'untitled.txt'
         if !session?
           session = new ace.EditSession content, mode
+        else if session.path is 'untitled.txt'
+          session.path = path
+          session.setDocument new Document content
       catch
         #something weird is going on, the first attempt to make an EditSession always fails because it can't call "split" on undefined
         #no idea why, but the second attempt works
@@ -90,11 +93,14 @@ angular.module 'app.controllers', []
         state.files.push path
         do writeState
         
-    $scope.editor.newFile = () ->
+    $scope.editor.newFile = (apply) ->
       session = new ace.EditSession '', 'ace/mode/text'
       session.path = 'untitled.txt'
       $scope.editor.setSession session
-      $scope.$apply $scope.sessions.push session
+      if apply
+        $scope.$apply $scope.sessions.push session
+      else
+        $scope.sessions.push session
       
     openFile = document.querySelector '#openFile'
     saveFile = document.querySelector '#saveFile'
@@ -106,6 +112,7 @@ angular.module 'app.controllers', []
           $scope.editor.loadFile '' + data, path, true
         else
           alert err
+      this.value = ''
     
     saveAsListener = (evt) ->
       session = do $scope.editor.getSession
@@ -141,7 +148,7 @@ angular.module 'app.controllers', []
         if state.files.length
           $scope.editor.loadFile '' + fs.readFileSync(file), file for file in state.files
         else
-          do $scope.editor.newFile
+          do $scope.editor.newFile true
       catch e
         do $scope.editor.newFile
         
@@ -162,7 +169,7 @@ angular.module 'app.controllers', []
           do $scope.editor.newFile
         
       $scope.mode = ''
-      $scope.mode = session.$mode.$id
+      $scope.mode = $scope.editor.getSession().$mode.$id
       
       state.files = _.chain $scope.sessions
                       .where (session) -> session.path isnt 'untitled.txt'
