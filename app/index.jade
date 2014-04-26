@@ -22,8 +22,7 @@ html(lang='en', ng-app='app')
         a(ng-click='close()') ~
     .holder
       #project(ng-controller='ProjectCtrl', ng-class="{collapsed: collapsed}", ng-mouseenter="collapsed = false", ng-mouseleave="collapsed = true")
-        .project-name node-webkit-editor
-        .tree hey there
+        project
       .container
         .tabs
           tabs(sessions='sessions', editor='editor')

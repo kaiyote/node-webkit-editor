@@ -101,21 +101,21 @@ angular.module 'app.controllers', []
     saveFile = document.querySelector '#saveFile'
     
     openListener = (evt) ->
-      path = this.value
+      path = @value
       fs.readFile path, null, (err, data) ->
         if !err
           $scope.editor.loadFile '' + data, path, true
         else
           alert err
-      this.value = ''
+      @value = ''
     
     saveAsListener = (evt) ->
       session = do $scope.editor.getSession
-      fs.writeFile this.value, $scope.editor.getValue()
+      fs.writeFile @value, $scope.editor.getValue()
       #update editor path and state
-      session.path = this.value
+      session.path = @value
       Session.state.files = _.reject Session.state.files, (file) -> file is session.path
-      Session.state.files.push this.value
+      Session.state.files.push @value
       do Session.writeSession
     
     #ensure we don't keep attaching the same even listener repeatedly
@@ -176,14 +176,15 @@ angular.module 'app.controllers', []
   '$scope'
   '$rootScope'
   'Session'
-  ($scope, $rootScope, Session) ->
+  'Project'
+  ($scope, $rootScope, Session, Project) ->
     $scope.collapsed = true
     
     addDirectory = document.querySelector '#addDirectory'
     
     addListener = (evt) ->
-      projectPath = this.value
-      Session.state.paths.push projectPath unless _.find Session.state.paths, (sessionPath) -> sessionPath is projectPath
+      projectPath = @value
+      Project.project.directories.push projectPath unless _.find Project.project.directories, (existingPath) -> existingPath is projectPath
       do Session.writeSession
       
     addDirectory.removeEventListener 'change', addListener, false

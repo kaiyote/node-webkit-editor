@@ -36,3 +36,64 @@ angular.module 'app.directives', [
       scope.isActive = (file) ->
         scope.editor.getSession().path is file
 ]
+.directive 'project', [
+  '$rootScope'
+  'Project'
+  ($rootScope, Project) ->
+    restrict: 'E'
+    template: '<div>' +
+                '<div class="project-name">{{project.name}}</div>' +
+                '<dirtree directory="directory" ng-repeat="directory in projectListing"></dirtree>' +
+              '</div>'
+    replace: true
+    link: (scope, element, attrs) ->
+      path = require 'path'
+      fs = require 'fs'
+      
+      scope.project = Project.project
+      scope.projectListing = []
+      
+      scope.$watch 'project.directories', (newVal, oldVal) ->
+          scope.projectListing.push new Directory dir for dir in newVal unless _.find scope.projectListing, (existingPath) -> existingPath.root is projectPath
+        , true
+      
+      scope.load = (directory) ->
+        do directory.loadChildren
+]
+.directive 'dirtree', [
+  '$compile'
+  ($compile) ->
+    restrict: 'E'
+    scope:
+      directory: '=directory'
+    template: '<div class="tree" ng-click="load(directory)">' +
+                '<span>{{directory.name}}</span>' +
+              '</div>'
+    replace: true
+    link: (scope, element, attrs) ->
+      dirNode = angular.element '<dirtree></dirtree>'
+          .attr 'ng-repeat', 'dir in directory.dirs'
+          .attr 'directory', 'dir'
+      element.append dirNode
+      scope.nodeFunction = $compile scope.dirNode
+          
+      appendElement = (element) ->
+        scope.element.append element
+        
+      scope.load = (directory) ->
+        do directory.loadChildren
+        scope.nodeFunction scope
+]
+.directive 'filenode', [
+  '$rootScope'
+  ($rootScope) ->
+    restrict: 'E'
+    scope:
+      file: '=file'
+    template: '<div class="tree">' +
+                '<span>{{file}}</span>' +
+              '</div>'
+    replace: true
+    link: (scope, element, attrs) ->
+      scope.click = () ->
+]
