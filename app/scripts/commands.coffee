@@ -46,5 +46,13 @@ commands = [
     mac: 'Command-.'
   exec: (editor) ->
     document.querySelector('#addDirectory').click()
-  readOnly: true
+  readOnly: false
+,
+  name: 'saveProjectAs'
+  bindKey:
+    win: 'Ctrl-Alt-S'
+    mac: 'Command-Alt-S'
+  exec: (editor) ->
+    document.querySelector('#saveProject').click()
+  readOnly: false
 ]

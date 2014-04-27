@@ -43,7 +43,7 @@ angular.module 'app.directives', [
     restrict: 'E'
     template: '<div>' +
                 '<div class="project-name">{{project.name}}</div>' +
-                '<dirtree directory="directory" ng-repeat="directory in projectListing"></dirtree>' +
+                '<dirtree root="directory" ng-repeat="directory in projectListing"></dirtree>' +
               '</div>'
     replace: true
     link: (scope, element, attrs) ->
@@ -61,28 +61,24 @@ angular.module 'app.directives', [
         do directory.loadChildren
 ]
 .directive 'dirtree', [
-  '$compile'
-  ($compile) ->
+  'RecursionHelper'
+  (RecursionHelper) ->
     restrict: 'E'
     scope:
-      directory: '=directory'
-    template: '<div class="tree" ng-click="load(directory)">' +
-                '<span>{{directory.name}}</span>' +
+      root: '=root'
+    template: '<div class="tree">' +
+                '<span ng-click="load()">{{root.name}}</span>' +
+                '<dirtree root="directory" ng-repeat="directory in root.dirs"></dirtree>' +
+                '<filenode file="file" ng-repeat="file in root.files"></filenode>' +
               '</div>'
     replace: true
-    link: (scope, element, attrs) ->
-      dirNode = angular.element '<dirtree></dirtree>'
-          .attr 'ng-repeat', 'dir in directory.dirs'
-          .attr 'directory', 'dir'
-      element.append dirNode
-      scope.nodeFunction = $compile scope.dirNode
-          
-      appendElement = (element) ->
-        scope.element.append element
-        
-      scope.load = (directory) ->
-        do directory.loadChildren
-        scope.nodeFunction scope
+    compile: RecursionHelper.compile
+    controller: [
+      '$scope'
+      ($scope) ->
+        $scope.load = ->
+          do $scope.root.loadChildren
+    ]
 ]
 .directive 'filenode', [
   '$rootScope'
@@ -91,9 +87,12 @@ angular.module 'app.directives', [
     scope:
       file: '=file'
     template: '<div class="tree">' +
-                '<span>{{file}}</span>' +
+                '<span>{{display()}}</span>' +
               '</div>'
     replace: true
     link: (scope, element, attrs) ->
-      scope.click = () ->
+      path = require 'path'
+      
+      scope.display = ->
+        path.basename scope.file
 ]

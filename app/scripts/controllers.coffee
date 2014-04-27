@@ -32,7 +32,8 @@ angular.module 'app.controllers', []
   '$scope'
   '$rootScope'
   'Session'
-  ($scope, $rootScope, Session) ->
+  'Project'
+  ($scope, $rootScope, Session, Project) ->
     fs = require 'fs'
     Path = require 'path'
     nodeWindow = require('nw.gui').Window.get()
@@ -143,6 +144,8 @@ angular.module 'app.controllers', []
           $scope.editor.loadFile '' + fs.readFileSync(file), file for file in Session.state.files
         else
           $scope.editor.newFile true
+        if Session.state.project
+          $scope.$apply Project.loadProject Session.state.project
       catch e
         do $scope.editor.newFile
         
@@ -181,12 +184,20 @@ angular.module 'app.controllers', []
     $scope.collapsed = true
     
     addDirectory = document.querySelector '#addDirectory'
+    saveProject = document.querySelector '#saveProject'
     
     addListener = (evt) ->
       projectPath = @value
       Project.project.directories.push projectPath unless _.find Project.project.directories, (existingPath) -> existingPath is projectPath
+      
+    saveListener = (evt) ->
+      Project.writeProject @value
+      Session.state.project = @value
       do Session.writeSession
       
     addDirectory.removeEventListener 'change', addListener, false
     addDirectory.addEventListener 'change', addListener, false
+    
+    saveProject.removeEventListener 'change', saveListener, false
+    saveProject.addEventListener 'change', saveListener, false
 ]

@@ -62,7 +62,7 @@ class Project
   constructor: ->
     @project =
       directories: []
-      name: 'project!!!'
+      name: ''
     
   loadProject: (projectFile) ->
     @path = projectFile
@@ -76,9 +76,11 @@ class Project
       #no session to load
       @project =
         directories: []
-        name: 'project!!!'
+        name: ''
         
-  writeProject: ->
+  writeProject: (projectFile) ->
+    if projectFile
+      @path = projectFile
     try
       fs.readdirSync path.dirname @path
     catch

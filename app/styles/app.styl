@@ -93,6 +93,8 @@ input[type='file']
     flex-flow column
     align-items baseline
     transition flex .5s ease
+    overflow-y auto
+    overflow-x hidden
     
     &.collapsed
       flex 0 1 40px
@@ -114,6 +116,7 @@ input[type='file']
           
     .tree
       display flex
+      flex-flow column
       flex 1 0 auto
       opacity 1
       white-space nowrap
