@@ -9,6 +9,7 @@ html(lang='en', ng-app='app')
       window.brunch['auto-reload'] = {
         enabled: true
       };
+      require('nw.gui').Window.get().showDevTools();
     script(src='js/vendor.js')
     script(src='js/app.js')
   body(ng-controller='EditorCtrl')
