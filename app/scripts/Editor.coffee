@@ -1,28 +1,69 @@
+Tabs =
+  controller: class
+    constructor: (@sessions)->
+      
+    editor: m.prop null
+  
+    isActive: (path) ->
+      @editor()?.getSession().path is path
+      
+    update: (session) =>
+      currentActive = document.querySelector 'div.tab.active'
+      nextActive = document.querySelector("span[data-text='#{@filename session.path}']").parentElement
+      currentActive?.classList.remove 'active'
+      nextActive?.classList.add 'active'
+      
+    filename: (path) ->
+      NWEditor.Path.basename path
+      
+    close: ->
+      console.log this
+  
+  view: (ctrl) ->
+    ctrl.sessions.map (session, index) ->
+      m '.tab',
+          class: if ctrl.isActive session.path then 'active' else ''
+        , [
+          m 'span',
+              onclick: -> ctrl.update session
+              'data-text': ctrl.filename session.path
+            , ctrl.filename session.path
+          m 'a.status', onclick: ctrl.close, 'x'
+        ]
+
 Editor =
-  controller: ->
-    @state = new NWEditor.State
-    @themes = m.prop []
-    @modes = m.prop {modes: []}
+  controller: class
+    constructor: ->
+      @sessions = [{path: 'test.txt'}]
+      @tabsCtrl = new Tabs.controller(@sessions)
+      
+    state: do NWEditor.State.get
+    themes: []
+    modes: {modes: []}
+    theme: ''
+    mode: 'ace/mode/text'
     
-    @showDevTools = ->
+    showDevTools: ->
       do NWEditor.Window.showDevTools
       
-    @reload = ->
+    reload: ->
       do NWEditor.Window.reloadIgnoringCache
       
-    @setup = =>
+    setup: ->
+      do @state.Load
       @editor = ace.edit 'editor'
-      @themes(ace.require('ace/ext/themelist').themes)
-      @modes(ace.require 'ace/ext/modelist')
+      @tabsCtrl.editor @editor
+      @themes = ace.require('ace/ext/themelist').themes
+      @modes = ace.require 'ace/ext/modelist'
       ace.config.set 'workerPath', 'js/workers'
-      
-    this
+      @theme = @state.theme || 'ace/theme/chrome'
+      if @state.files.length then @editor.loadFile file for file in @state.files else do @editor.newFile
     
   view: (ctrl) -> [
     m '.tabs', [
-      #tabs component
+      new Tabs.view ctrl.tabsCtrl
     ]
-    m '#editor', config: ctrl.setup
+    m '#editor', config: -> ctrl.setup()
     m '.bottom-bar', [
       m '.position', 'lolz'
       m '.devTools', [
@@ -31,11 +72,11 @@ Editor =
       ]
       m '.selectors', [
         m 'select.syntax', [
-          ctrl.modes().modes.map (mode, index) ->
+          ctrl.modes.modes.map (mode, index) ->
             m 'option', value: mode.mode, mode.caption
         ]
         m 'select.theme', [
-          ctrl.themes().map (theme, index) ->
+          ctrl.themes.map (theme, index) ->
             m 'option', value: theme.theme, theme.caption
         ]
       ]

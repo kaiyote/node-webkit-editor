@@ -9,6 +9,7 @@ html(lang='en', ng-app='app')
       window.brunch['auto-reload'] = {
         enabled: true
       };
+      require('nw.gui').Window.get().showDevTools();
   body(ng-controller='EditorCtrl')
     .titlebar
     .holder

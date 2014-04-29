@@ -15,8 +15,8 @@
     "mithril": "~0.1.10"
   },
   "overrides": {
-    "angular-mocks": {
-      "main": "README.md"
+    "mithril": {
+      "main": "mithril.js"
     },
     "ace-builds": {
       "main": [
