@@ -37,3 +37,6 @@ NWEditor =
           
       Write: ->
         NWEditor.FS.writeFile _filename, JSON.stringify this
+        
+#clear off any listeners that might be hanging around across a refresh
+NWEditor.Window.removeAllListeners 'on'

@@ -2,16 +2,18 @@ Tabs =
   controller: class
     constructor: (@sessions)->
       
-    editor: m.prop null
+    editor: null
   
     isActive: (path) ->
-      @editor()?.getSession().path is path
+      @editor?.getSession().path is path
       
     update: (session) =>
       currentActive = document.querySelector 'div.tab.active'
       nextActive = document.querySelector("span[data-text='#{@filename session.path}']").parentElement
       currentActive?.classList.remove 'active'
       nextActive?.classList.add 'active'
+      
+      @editor?.setSession session
       
     filename: (path) ->
       NWEditor.Path.basename path
@@ -34,7 +36,7 @@ Tabs =
 Editor =
   controller: class
     constructor: ->
-      @sessions = [{path: 'test.txt'}]
+      @sessions = []
       @tabsCtrl = new Tabs.controller(@sessions)
       
     state: do NWEditor.State.get
@@ -49,10 +51,47 @@ Editor =
     reload: ->
       do NWEditor.Window.reloadIgnoringCache
       
-    setup: ->
+    setup: =>
       do @state.Load
       @editor = ace.edit 'editor'
-      @tabsCtrl.editor @editor
+      
+      @editor.loadFile = (content, path, save) =>
+        mode = @modes.getModeForPath path
+        try
+          session = _.find @sessions, (session) -> session.path is path or session.path is 'untitled.txt'
+          if !session?
+            session = new ace.EditSession content, mode.mode
+          else if session.path is 'untitled.txt'
+            session.setDocument new Document content
+            session.setMode mode.mode
+        catch
+          #something weird is going on, the first attempt to make an EditSession always fails because it can't call "split" on undefined
+          #no idea why, but the second attempt works
+          session = new ace.EditSession content, mode.mode
+        session.path = path
+        # close any file watcher we currently have
+        do session.watcher?.close
+        session.watcher = NWEditor.FS.watch path, (event, filename) =>
+          do session.watcher.close
+          @editor.loadFile '' + NWEditor.FS.readFileSync(path), path
+        
+        @sessions.push session unless _.find @sessions, (innerSession) -> innerSession.path is session.path
+        @editor.setSession session
+        do @editor.navigateFileStart
+        
+        @mode = mode.mode
+        if save
+          @state.files.push path
+          do @state.Write
+        
+      @editor.newFile = =>
+        session = new ace.EditSession '', 'ace/mode/text'
+        session.path = 'untitled.txt'
+        @editor.setSession session
+        @sessions.push session
+        @mode = 'ace/mode/text'
+      
+      @tabsCtrl.editor = @editor
       @themes = ace.require('ace/ext/themelist').themes
       @modes = ace.require 'ace/ext/modelist'
       ace.config.set 'workerPath', 'js/workers'
