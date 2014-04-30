@@ -1,5 +1,5 @@
 doctype html
-html(lang='en', ng-app='app')
+html(lang='en')
   head
     meta(charset='utf-8')
     link(rel='stylesheet', href='css/app.css')
@@ -10,23 +10,8 @@ html(lang='en', ng-app='app')
         enabled: true
       };
       require('nw.gui').Window.get().showDevTools();
-  body(ng-controller='EditorCtrl')
+    script(src='js/vendor.js')
+  body
     .titlebar
     .holder
-      //.tabs
-      //  tabs(sessions='sessions', editor='editor')
-      //#editor
-      //.bottom-bar
-      //  .position lolz
-      //  .devTools
-      //    a(ng-click='reload()') Reload
-      //    a(ng-click='showDevTools()') Show Dev Tools
-      //  .selectors
-      //    select.syntax(ng-model='mode', tabindex='-1')
-      //      option(ng-repeat="mode in modes", value="{{mode.mode}}", ng-selected="$first") {{mode.caption}}
-      //    select.theme(ng-model='theme', tabindex='-1')
-      //      option(ng-repeat="theme in themes", value="{{theme.theme}}", ng-selected="$first") {{theme.caption}}
-    input#openFile(type='file')
-    input#saveFile(type='file', nwsaveas)
-  script(src='js/vendor.js')
   script(src='js/app.js')

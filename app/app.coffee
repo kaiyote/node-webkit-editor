@@ -11,32 +11,24 @@ NWEditor =
   
     class State
       constructor: ->
-        _filename = NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'session.json'
       
       Load: ->
+        _filename = NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'session.json'
         try
-          NWEditor.FS.readFile _filename, (err, data) =>
-            if !err
-              data = JSON.parse data
-              @files = data.files or []
-              @theme = data.theme or ''
-              @paths = data.paths or []
-              @project = data.project or ''
-            else
-              #file doesn't exist, continue onwards
-              @files = []
-              @theme = ''
-              @paths = []
-              @project = ''
+          data = JSON.parse '' + NWEditor.FS.readFileSync _filename
+          @files = data.files or []
+          @theme = data.theme or ''
+          @project = data.project or ''
         catch
-          #probably bad JSON, continue onwards
+          #probably bad JSON or file doesn't exist, continue onwards
           @files = []
           @theme = ''
-          @paths = []
           @project = ''
           
       Write: ->
+        _filename = NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'session.json'
         NWEditor.FS.writeFile _filename, JSON.stringify this
+  Sessions: new Array
         
 #clear off any listeners that might be hanging around across a refresh
 NWEditor.Window.removeAllListeners 'on'
