@@ -1,5 +1,5 @@
 doctype html
-html(lang='en', ng-app='app')
+html(lang='en')
   head
     meta(charset='utf-8')
     link(rel='stylesheet', href='css/app.css')
@@ -9,35 +9,11 @@ html(lang='en', ng-app='app')
       window.brunch['auto-reload'] = {
         enabled: true
       };
+      require('nw.gui').Window.get().showDevTools();
     script(src='js/vendor.js')
-    //script(src='js/app.templates.js')
-    script(src='js/app.js')
-  body(ng-controller='EditorCtrl')
-    .titlebar(ng-controller='TitlebarCtrl')
-      b.app-name Node Webkit Editor
-      menubar
-      .window-controls
-        a(ng-click='minimize()') -
-        a(ng-click='maximize()', ng-class="{maximized: maximized}"): div &and;
-        a(ng-click='close()') ~
+  body
+    .titlebar
     .holder
-      #project(ng-controller='ProjectCtrl', ng-class="{collapsed: collapsed}", ng-mouseenter="collapsed = false", ng-mouseleave="collapsed = true")
-        project
-      .container
-        .tabs
-          tabs(sessions='sessions', editor='editor')
-        #editor
-    .bottom-bar
-      .position lolz
-      .devTools
-        a(ng-click='reload()') Reload
-        a(ng-click='showDevTools()') Show Dev Tools
-      .selectors
-        select.syntax(ng-model='mode', tabindex='-1')
-          option(ng-repeat="mode in modes", value="{{mode.mode}}", ng-selected="$first") {{mode.caption}}
-        select.theme(ng-model='theme', tabindex='-1')
-          option(ng-repeat="theme in themes", value="{{theme.theme}}", ng-selected="$first") {{theme.caption}}
-    input#openFile(type='file')
-    input#saveFile(type='file', nwsaveas)
-    input#addDirectory(type='file', nwdirectory)
-    input#saveProject(type='file', nwsaveas, accept=".nwproj")
+      //#project(ng-controller='ProjectCtrl', ng-class="{collapsed: collapsed}", ng-mouseenter="collapsed = false", ng-mouseleave="collapsed = true")
+      //  project
+  script(src='js/app.js')
