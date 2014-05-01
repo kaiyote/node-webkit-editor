@@ -1,14 +1,12 @@
 Tabs =
   controller: class
     constructor: ->
-      
-    editor: null
   
     isActive: (session) ->
-      @editor?.getSession() is session
+      NWEditor.Editor?.getSession() is session
       
     update: (session) ->
-      @editor?.setSession session
+      NWEditor.Editor?.setSession session
       
     filename: (path) ->
       NWEditor.Path.basename path
@@ -16,11 +14,11 @@ Tabs =
     close: (session) ->
       do session.watcher?.close
       NWEditor.Sessions = _.filter NWEditor.Sessions, (innerSession) -> innerSession isnt session
-      if @editor.getSession() is session
+      if NWEditor.Editor.getSession() is session
         if NWEditor.Sessions.length isnt 0
-          @editor.setSession _.last(NWEditor.Sessions)
+          NWEditor.Editor.setSession _.last(NWEditor.Sessions)
         else
-          do @editor.newFile
+          do NWEditor.Editor.newFile
       NWEditor.State.get().files = _.chain NWEditor.Sessions
                                     .filter (session) -> session.path isnt 'untitled.txt'
                                     .map (session) -> session.path

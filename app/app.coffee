@@ -5,6 +5,7 @@ NWEditor =
   Path: require 'path'
   Window: do require('nw.gui').Window.get
   Sessions: new Array
+  Editor: null
   State: class
     instance = null
     @get: ->
@@ -54,7 +55,7 @@ NWEditor =
       Write: (file) ->
         _path = file if file
         try
-          NWEditor.FS.readdirSync path.dirname _path
+          NWEditor.FS.readdirSync NWEditor.Path.dirname _path
         catch
           #doesn't exist, so make it
           NWEditor.FS.mkdirSync NWEditor.Path.dirname _path
@@ -65,6 +66,25 @@ NWEditor =
       @files = []
       @directories = []
       @name = NWEditor.Path.basename root
+      @loaded = false
+      
+    clear: ->
+      @files = []
+      @directories = []
+      @loaded = false
+      
+    loadChildren: ->
+      unless @loaded
+        files = NWEditor.FS.readdirSync @root
+        for file in files
+          if file[0] isnt '.'
+            filePath = NWEditor.Path.join @root, file
+            stat = NWEditor.FS.statSync filePath
+            if do stat.isDirectory
+              @directories.push new NWEditor.Directory filePath
+            else
+              @files.push filePath
+        @loaded = true
   
 #clear off any listeners that might be hanging around across a refresh
 NWEditor.Window.removeAllListeners 'on'

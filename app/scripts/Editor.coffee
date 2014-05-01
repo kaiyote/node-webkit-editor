@@ -16,17 +16,17 @@ Editor =
       do NWEditor.Window.reloadIgnoringCache
       
     changeTheme: (theme) ->
-      @editor.setTheme theme
+      NWEditor.Editor.setTheme theme
       @state.theme = theme
       do @state.Write
     
     setup: (element, isInitialized) =>
       unless isInitialized
         do @state.Load
-        @editor = ace.edit element
-        @editor.commands.addCommand command for command in commands
+        NWEditor.Editor = ace.edit element
+        NWEditor.Editor.commands.addCommand command for command in commands
         
-        @editor.loadFile = (content, path, save) =>
+        NWEditor.Editor.loadFile = (content, path, save, activate) =>
           mode = @modes.getModeForPath path
           replace = false
           try
@@ -47,15 +47,16 @@ Editor =
           do session.watcher?.close
           session.watcher = NWEditor.FS.watch path, (event, filename) =>
             do session.watcher.close
-            @editor.loadFile '' + NWEditor.FS.readFileSync(path), path
+            NWEditor.Editor.loadFile '' + NWEditor.FS.readFileSync(path), path
           
           unless _.find(NWEditor.Sessions, (innerSession) -> innerSession.path is session.path)
             if replace
               NWEditor.Sessions[NWEditor.Sessions.indexOf(_.find NWEditor.Sessions, (foundSession) -> foundSession.path is origSession.path)] = session
             else
               NWEditor.Sessions.push session
-          @editor.setSession session
-          do @editor.navigateFileStart
+          if activate
+            NWEditor.Editor.setSession session
+            do NWEditor.Editor.navigateFileStart
           
           if save
             @state.files = _.chain NWEditor.Sessions
@@ -64,19 +65,19 @@ Editor =
                             .value()
             do @state.Write
           
-        @editor.newFile = =>
+        NWEditor.Editor.newFile = =>
           session = new ace.EditSession '', 'ace/mode/text'
           session.path = 'untitled.txt'
-          @editor.setSession session
+          NWEditor.Editor.setSession session
           NWEditor.Sessions.push session
         
-        @tabsCtrl.editor = @editor
         @themes = ace.require('ace/ext/themelist').themes
         @modes = ace.require 'ace/ext/modelist'
         ace.config.set 'workerPath', 'js/workers'
         @theme = @state.theme || 'ace/theme/chrome'
-        @editor.setTheme @theme
-        if @state.files.length then @editor.loadFile '' + NWEditor.FS.readFileSync(file), file for file in @state.files else do @editor.newFile
+        NWEditor.Editor.setTheme @theme
+        if @state.files.length then NWEditor.Editor.loadFile '' + NWEditor.FS.readFileSync(file), file, false, true for file in @state.files else do NWEditor.Editor.newFile
+        if @state.project then NWEditor.Project.get().Load @state.project
     
   view: (ctrl) -> [
     m '.holder', [
@@ -99,7 +100,7 @@ Editor =
           ctrl.modes.modes.map (mode, index) ->
             m 'option',
                 value: mode.mode
-                selected: mode.mode is ctrl.editor.getSession().$modeId
+                selected: mode.mode is NWEditor.Editor?.getSession().$modeId
               , mode.caption
         ]
         m 'select.theme',
@@ -120,7 +121,7 @@ Editor =
           path = this.value
           NWEditor.FS.readFile path, null, (err, data) ->
             if !err
-              ctrl.editor.loadFile '' + data, path, true
+              NWEditor.Editor.loadFile '' + data, path, true, true
               do m.redraw
             else
               alert err
@@ -129,8 +130,8 @@ Editor =
         type: 'file'
         nwsaveas: ''
         onchange: ->
-          session = do ctrl.editor.getSession
-          NWEditor.FS.writeFile this.value, ctrl.editor.getValue()
+          session = do NWEditor.Editor.getSession
+          NWEditor.FS.writeFile this.value, NWEditor.Editor.getValue()
           ctrl.state.files = _.reject ctrl.state.files, (file) -> file is session.path
           #update editor path and state
           session.path = this.value

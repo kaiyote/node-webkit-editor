@@ -3,30 +3,33 @@ FileNode =
     constructor: (@file) ->
       
   view: (ctrl) ->
-    m '.tree', [
-      m 'span', NWEditor.Path.basename ctrl.file
+    m '.tree.file', [
+      m 'span',
+          onclick: -> NWEditor.Editor.loadFile '' + NWEditor.FS.readFileSync(ctrl.file), ctrl.file, true, true
+        , NWEditor.Path.basename ctrl.file
     ]
 
 DirectoryTree =
   controller: class
     constructor: (@root) ->
+      @loaded = false
       
-    loadChildren: ->
-      files = NWEditor.FS.readdirSync @root.root
-      for file in files
-        if file[0] isnt '.'
-          filePath = NWEditor.Path.join @root.root, file
-          stat = NWEditor.FS.statSync filePath
-          if do stat.isDirectory
-            @root.directories.push new NWEditor.Directory filePath
-          else
-            @root.files.push filePath
+    expand: ->
+      do @root.loadChildren
+      
+    collapse: ->
+      do @root.clear
       
   view: (ctrl) ->
     m '.tree', [
-      m 'div',
-        onclick: -> do ctrl.loadChildren
-      , m 'span', ctrl.root.name
+      m '.tree-container', [
+        m '.expander',
+            class: if ctrl.root.loaded then 'expanded' else ''
+          , '>'
+        m 'span',
+          onclick: -> if ctrl.root.loaded then do ctrl.collapse else do ctrl.expand
+        , ctrl.root.name
+      ]
       ctrl.root.directories.map (directory) ->
         new DirectoryTree.view(new DirectoryTree.controller directory)
       ctrl.root.files.map (file) ->
@@ -39,8 +42,14 @@ ProjectTree =
       @collapsed = true
       @project = do NWEditor.Project.get
       @state = do NWEditor.State.get
-      @rootCtrl = new DirectoryTree.controller
       @directoryListing = []
+      
+    populate: ->
+      for path in @project.directories
+        unless(_.find @directoryListing, (dir) -> dir.root is path)
+          directory = new NWEditor.Directory path
+          do directory.loadChildren
+          @directoryListing.push directory
       
   view: (ctrl) -> [
     m '#project',
@@ -49,7 +58,7 @@ ProjectTree =
         onmouseleave: () -> ctrl.collapsed = true
       , [
         m '.project-name', ctrl.project.name
-        ctrl.directoryListing.map (directory) ->
+        do ctrl.populate && ctrl.directoryListing.map (directory) ->
           new DirectoryTree.view(new DirectoryTree.controller directory)
       ]
     m 'input#addDirectory',
@@ -59,10 +68,13 @@ ProjectTree =
           projectPath = @value
           unless _.find(ctrl.project.directories, (existingPath) -> existingPath is projectPath)
             ctrl.project.directories.push projectPath
-            ctrl.directoryListing.push new NWEditor.Directory projectPath
-    m 'input#saveProjectAs',
+            directory = new NWEditor.Directory projectPath
+            do directory.loadChildren
+            ctrl.directoryListing.push directory
+    m 'input#saveProject',
         type: 'file'
         nwsaveas: ''
+        accept: '.nwproj'
         onchange: (evt) ->
           ctrl.project.Write @value
           ctrl.state.project = @value

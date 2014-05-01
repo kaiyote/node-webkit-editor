@@ -94,7 +94,7 @@ input[type='file']
     
     #project
       display flex
-      flex 0 0 200px
+      flex 0 1 200px
       background linear-gradient(to right, mix($background, $foreground, 85%), mix($background, $foreground, 80%))
       color mix($foreground, $background, 80%)
       flex-flow column
@@ -129,9 +129,30 @@ input[type='file']
         white-space nowrap
         transition width, opacity .5s ease
         font-size 12px
+        cursor pointer
+        
+        .tree-container
+          display flex
+          flex-flow row
+          flex 0 1 auto
+          
+          span
+            width 100%
+            z-index 1
+          
+          .expander
+            transition -webkit-transform .5s ease
+            transform rotate(0deg)
+            font-weight bold
+          
+            &.expanded
+              transform rotate(90deg)
         
         .tree
           padding-left 10px
+          
+      .file
+        color $foreground
     
     .container
       display flex
