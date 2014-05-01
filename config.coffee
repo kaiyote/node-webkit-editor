@@ -13,6 +13,10 @@ exports.config =
       joinTo:
         'js/app.js': /^app/
         'js/vendor.js': /^bower_components/
+      order:
+        after: [
+          'app/scripts/Editor.coffee'
+        ]
 
     stylesheets:
       joinTo:
