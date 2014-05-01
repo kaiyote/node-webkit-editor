@@ -39,11 +39,24 @@ Tabs =
               onclick: () -> ctrl.close session
             , 'x'
         ]
+        
+Project =
+  controller: class
+    constructor: ->
+      @collapsed = true
+      
+  view: (ctrl) ->
+    m '#project',
+        class: if ctrl.collapsed then 'collapsed' else ''
+        onmouseenter: () -> ctrl.collapsed = false
+        onmouseleave: () -> ctrl.collapsed = true
+      , ''
 
 Editor =
   controller: class
     constructor: ->
       @tabsCtrl = new Tabs.controller
+      @projectCtrl = new Project.controller
       
     state: do NWEditor.State.get
     themes: []
@@ -61,10 +74,10 @@ Editor =
       @state.theme = theme
       do @state.Write
     
-    setup: (isInitialized) =>
+    setup: (element, isInitialized) =>
       unless isInitialized
         do @state.Load
-        @editor = ace.edit 'editor'
+        @editor = ace.edit element
         @editor.commands.addCommand command for command in commands
         
         @editor.loadFile = (content, path, save) =>
@@ -120,10 +133,15 @@ Editor =
         if @state.files.length then @editor.loadFile '' + NWEditor.FS.readFileSync(file), file for file in @state.files else do @editor.newFile
     
   view: (ctrl) -> [
-    m '.tabs', [
-      new Tabs.view ctrl.tabsCtrl
+    m '.holder', [
+      new Project.view ctrl.projectCtrl
+      m '.container', [
+        m '.tabs', [
+          new Tabs.view ctrl.tabsCtrl
+        ]
+        m '#editor', config: (element, isInitialized) -> ctrl.setup element, isInitialized
+      ]
     ]
-    m '#editor', config: (element, isInitialized) -> ctrl.setup isInitialized
     m '.bottom-bar', [
       m '.position', 'lolz'
       m '.devTools', [
@@ -175,4 +193,4 @@ Editor =
           do m.redraw
   ]
 
-m.module document.querySelector('div.holder'), Editor
+m.module document.querySelector('div.editor'), Editor
