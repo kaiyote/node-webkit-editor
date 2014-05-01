@@ -25,7 +25,7 @@ Titlebar =
       
   view: (ctrl) -> [
     m 'b.app-name', 'Node Webkit Editor'
-    m 'menubar'
+    #m 'menubar'
     m '.window-controls', [
       m 'a', onclick: ctrl.minimize, '-'
       m 'a',

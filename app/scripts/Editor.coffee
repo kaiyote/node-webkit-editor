@@ -15,8 +15,7 @@ Tabs =
       
     close: (session) ->
       do session.watcher?.close
-      NWEditor.Sessions = _.filter NWEditor.Sessions, (innerSession) ->
-        innerSession isnt session
+      NWEditor.Sessions = _.filter NWEditor.Sessions, (innerSession) -> innerSession isnt session
       if @editor.getSession() is session
         if NWEditor.Sessions.length isnt 0
           @editor.setSession _.last(NWEditor.Sessions)
