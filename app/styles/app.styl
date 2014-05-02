@@ -1,5 +1,5 @@
-@require 'variables.styl'
 @require '/node_modules/fluidity/lib/fluidity.styl'
+@require 'variables.styl'
 @require 'mixins.styl'
 @require 'functions.styl'
 
@@ -15,7 +15,7 @@ body
   overflow hidden
   margin 0
   padding 0
-  font-family 'Segoe UI', 'Lucida Sans', 'Droid Sans', 'Liberation Sans', sans-serif
+  font-family 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace
   display flex
   flex-direction column
   align-items stretch
@@ -85,34 +85,26 @@ input[type='file']
   align-content stretch
   flex-flow row
   
-  #project
+  .project
     display flex
-    flex 0 1 200px
+    flex 0 0 auto
     background linear-gradient(to right, mix($background, $foreground, 85%), mix($background, $foreground, 80%))
     color mix($foreground, $background, 80%)
     flex-flow column
     align-items baseline
-    transition flex .5s ease
     overflow-y auto
     overflow-x hidden
+    width 200px
+    transition width .3s ease
     
     &.collapsed
-      flex 0 1 40px
-      
-      .project-name
-        width 0
-        opacity 0
-      
-      .tree
-        width 0
-        opacity 0
+      width 0
       
     .project-name
       display flex
       flex 0 1 auto
       opacity 1
       white-space nowrap
-      transition width, opacity .5s ease
           
     .tree
       display flex
@@ -120,7 +112,6 @@ input[type='file']
       flex 0 1 auto
       opacity 1
       white-space nowrap
-      transition width, opacity .5s ease
       font-size 12px
       cursor pointer
       
@@ -144,8 +135,9 @@ input[type='file']
       .tree
         padding-left 10px
         
-    .file
-      color $foreground
+        &.file
+          color $foreground
+          padding-left 24px
   
   .container
     display flex
@@ -159,7 +151,7 @@ input[type='file']
     
     .tabs
       display flex
-      flex 0 0 30px
+      flex 0 1 30px
       background linear-gradient(to bottom, mix($background, #888, 80%), mix($background, #888, 50%))
       flex-flow row
       cursor default
@@ -208,15 +200,25 @@ input[type='file']
   toolbar $foreground, $background
   font-size 12px
   
-  .position
+  .toggle-holder
     display flex
-    flex-flow column
-    justify-content center
+    flex 0 1 auto
+    flex-flow row
+    
+    .project-toggle
+      display flex
+      justify-content center
+      font-weight bold
+      transform rotate(0deg)
+      transition -webkit-transform .3s ease
+      
+      &.expand
+        transform rotate(180deg)
     
   .devTools
     display flex
-    justify-content center
     flex 1 0 auto
+    justify-content center
     
     a
       cursor default

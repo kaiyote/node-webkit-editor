@@ -18,8 +18,19 @@ Footer =
     reload: ->
       do NWEditor.Window.reloadIgnoringCache
       
+    collapseProject: ->
+      if (project = document.querySelector '.project.collapsed') isnt null
+        project.classList.remove 'collapsed'
+      else
+        document.querySelector('.project').classList.add 'collapsed'
+      
   view: (ctrl) -> [
-    m '.position', 'lolz'
+    m '.toggle-holder',
+        onclick: () -> do ctrl.collapseProject
+      , [1,2,3].map () ->
+          m '.project-toggle',
+              class: if document.querySelector '.project.collapsed' then 'expand' else ''
+            , '<'
     m '.devTools', [
       m 'a', onclick: ctrl.reload, 'Reload'
       m 'a', onclick: ctrl.showDevTools, 'Show Dev Tools'

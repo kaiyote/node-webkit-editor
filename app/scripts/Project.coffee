@@ -5,7 +5,7 @@ FileNode =
   view: (ctrl) ->
     m '.tree.file', [
       m 'span',
-          onclick: -> NWEditor.Editor.LoadFile ctrl.file, true, true
+          onclick: -> NWEditor.LoadFile ctrl.file, true, true
         , NWEditor.Path.basename ctrl.file
     ]
 
@@ -28,7 +28,7 @@ DirectoryTree =
           , '>'
         m 'span',
           onclick: -> if ctrl.root.loaded then do ctrl.collapse else do ctrl.expand
-        , ctrl.root.name
+        , m.trust '&nbsp;' +ctrl.root.name
       ]
       ctrl.root.directories.map (directory) ->
         new DirectoryTree.view(new DirectoryTree.controller directory)
@@ -52,15 +52,8 @@ ProjectTree =
           @directoryListing.push directory
       
   view: (ctrl) -> [
-    m '#project',
-        class: if ctrl.collapsed then 'collapsed' else ''
-        onmouseenter: () -> ctrl.collapsed = false
-        onmouseleave: () -> ctrl.collapsed = true
-      , [
-        m '.project-name', ctrl.project.name
-        do ctrl.populate && ctrl.directoryListing.map (directory) ->
-          new DirectoryTree.view(new DirectoryTree.controller directory)
-      ]
+    do ctrl.populate && ctrl.directoryListing.map (directory) ->
+      new DirectoryTree.view(new DirectoryTree.controller directory)
     m 'input#addDirectory',
         type: 'file'
         nwdirectory: true
@@ -80,3 +73,5 @@ ProjectTree =
           ctrl.state.project = @value
           do ctrl.state.Write
   ]
+  
+m.module document.querySelector('div.project'), ProjectTree

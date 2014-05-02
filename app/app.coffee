@@ -88,18 +88,15 @@ NWEditor.Project = class
     _path = ''
     constructor: ->
       @directories = []
-      @name = ''
       
     Load: (file) ->
       _path = file
       try
         data = JSON.parse '' + NWEditor.FS.readFileSync _path
         @directories = data.directories or []
-        @name = data.name or ''
       catch
         #either bad JSON or no file, carry on
         @directories = []
-        @name = ''
         
     Write: (file) ->
       _path = file if file

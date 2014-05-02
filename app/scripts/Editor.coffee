@@ -16,13 +16,10 @@ Editor =
         if @state.project then NWEditor.Project.get().Load @state.project
     
   view: (ctrl) -> [
-    new ProjectTree.view ctrl.projectCtrl
-    m '.container', [
-      m '.tabs', [
-        new Tabs.view ctrl.tabsCtrl
-      ]
-      m '#editor', config: (element, isInitialized) -> ctrl.setup element, isInitialized
+    m '.tabs', [
+      new Tabs.view ctrl.tabsCtrl
     ]
+    m '#editor', config: (element, isInitialized) -> ctrl.setup element, isInitialized
     m 'input#openFile',
         type: 'file'
         onchange: ->
@@ -48,6 +45,6 @@ Editor =
           do m.redraw
   ]
 
-m.module document.querySelector('div.holder'), Editor
+m.module document.querySelector('div.container'), Editor
 #tabs refuses to redraw the first time a session is added
 do m.redraw
