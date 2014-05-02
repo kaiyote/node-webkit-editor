@@ -155,6 +155,7 @@
         "./src-noconflict/theme-chrome.js",
         "./src-noconflict/theme-clouds.js",
         "./src-noconflict/theme-clouds_midnight.js",
+        "./src-noconflict/theme-cobalt.js",
         "./src-noconflict/theme-crimson_editor.js",
         "./src-noconflict/theme-dawn.js",
         "./src-noconflict/theme-dreamweaver.js",

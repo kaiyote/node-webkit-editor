@@ -1,6 +1,7 @@
 Tabs =
   controller: class
     constructor: ->
+      @state = NWEditor.State.get()
   
     isActive: (session) ->
       NWEditor.Editor?.getSession() is session
@@ -19,11 +20,11 @@ Tabs =
           NWEditor.Editor.setSession _.last(NWEditor.Sessions)
         else
           do NWEditor.Editor.newFile
-      NWEditor.State.get().files = _.chain NWEditor.Sessions
+      @state.files = _.chain NWEditor.Sessions
                                     .filter (session) -> session.path isnt 'untitled.txt'
                                     .map (session) -> session.path
                                     .value()
-      do NWEditor.State.get().Write
+      do @state.Write
   
   view: (ctrl) ->
     NWEditor.Sessions.map (session, index) ->

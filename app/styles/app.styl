@@ -78,173 +78,166 @@ input[type='file']
         background $accent
         color $foreground
         
-.editor
+.holder
   display flex
   flex-grow 1
-  flex-flow column
   align-items stretch
   align-content stretch
-        
-  .holder
+  flex-flow row
+  
+  #project
     display flex
-    flex-grow 1
-    align-items stretch
-    align-content stretch
-    flex-flow row
+    flex 0 1 200px
+    background linear-gradient(to right, mix($background, $foreground, 85%), mix($background, $foreground, 80%))
+    color mix($foreground, $background, 80%)
+    flex-flow column
+    align-items baseline
+    transition flex .5s ease
+    overflow-y auto
+    overflow-x hidden
     
-    #project
-      display flex
-      flex 0 1 200px
-      background linear-gradient(to right, mix($background, $foreground, 85%), mix($background, $foreground, 80%))
-      color mix($foreground, $background, 80%)
-      flex-flow column
-      align-items baseline
-      transition flex .5s ease
-      overflow-y auto
-      overflow-x hidden
+    &.collapsed
+      flex 0 1 40px
       
-      &.collapsed
-        flex 0 1 40px
-        
-        .project-name
-          width 0
-          opacity 0
-        
-        .tree
-          width 0
-          opacity 0
-        
       .project-name
-        display flex
-        flex 0 1 auto
-        opacity 1
-        white-space nowrap
-        transition width, opacity .5s ease
-            
+        width 0
+        opacity 0
+      
       .tree
+        width 0
+        opacity 0
+      
+    .project-name
+      display flex
+      flex 0 1 auto
+      opacity 1
+      white-space nowrap
+      transition width, opacity .5s ease
+          
+    .tree
+      display flex
+      flex-flow column
+      flex 0 1 auto
+      opacity 1
+      white-space nowrap
+      transition width, opacity .5s ease
+      font-size 12px
+      cursor pointer
+      
+      .tree-container
         display flex
-        flex-flow column
+        flex-flow row
         flex 0 1 auto
-        opacity 1
-        white-space nowrap
-        transition width, opacity .5s ease
-        font-size 12px
-        cursor pointer
         
-        .tree-container
-          display flex
-          flex-flow row
-          flex 0 1 auto
-          
-          span
-            width 100%
-            z-index 1
-          
-          .expander
-            transition -webkit-transform .5s ease
-            transform rotate(0deg)
-            font-weight bold
-          
-            &.expanded
-              transform rotate(90deg)
+        span
+          width 100%
+          z-index 1
         
-        .tree
-          padding-left 10px
-          
-      .file
-        color $foreground
-    
-    .container
+        .expander
+          transition -webkit-transform .5s ease
+          transform rotate(0deg)
+          font-weight bold
+        
+          &.expanded
+            transform rotate(90deg)
+      
+      .tree
+        padding-left 10px
+        
+    .file
+      color $foreground
+  
+  .container
+    display flex
+    flex 1 0 auto
+    flex-flow column
+  
+    #editor
       display flex
       flex 1 0 auto
       flex-flow column
     
-      #editor
-        display flex
-        flex 1 0 auto
-        flex-flow column
+    .tabs
+      display flex
+      flex 0 0 30px
+      background linear-gradient(to bottom, mix($background, #888, 80%), mix($background, #888, 50%))
+      flex-flow row
+      cursor default
       
-      .tabs
+      .tab
+        color mix($foreground, $background, 70%)
+        background linear-gradient(to bottom, mix($background, #888, 70%), mix($background, #888, 75%))
+        font-size 12px
+        margin 0 2px
+        vertical-align middle
+        line-height 28px
         display flex
-        flex 0 0 30px
-        background linear-gradient(to bottom, mix($background, #888, 80%), mix($background, #888, 50%))
         flex-flow row
-        cursor default
         
-        .tab
-          color mix($foreground, $background, 70%)
-          background linear-gradient(to bottom, mix($background, #888, 70%), mix($background, #888, 75%))
-          font-size 12px
-          margin 0 2px
-          vertical-align middle
-          line-height 28px
-          display flex
-          flex-flow row
-          
-          span
-            flex-grow 1
-            padding 0 10px
-          
-          &.active
-            border-bottom solid 5px $accent
-            background linear-gradient(to bottom, mix($background, #888, 75%), mix($background, #888, 85%))
-            color $foreground
-            
-            .status
-              color $accent
+        span
+          flex-grow 1
+          padding 0 10px
+        
+        &.active
+          border-bottom solid 5px $accent
+          background linear-gradient(to bottom, mix($background, #888, 75%), mix($background, #888, 85%))
+          color $foreground
           
           .status
-            font-size 14px
-            padding 0 2px
-            margin-right 8px
-            vertical-align middle
-            
-            &:hover
-              color $foreground
+            color $accent
         
-  .bottom-bar
-    margin 0
-    padding 2px 5px
-    flex 0 0 auto
-    align-self flex-end
-    width 100%
+        .status
+          font-size 14px
+          padding 0 2px
+          margin-right 8px
+          vertical-align middle
+          
+          &:hover
+            color $foreground
+        
+.bottom-bar
+  margin 0
+  padding 2px 5px
+  flex 0 0 auto
+  align-self flex-end
+  width 100%
+  display flex
+  justify-content space-between
+  align-content stretch
+  box-shadow: 0 -4px 4px rgba(0,0,0,.1)
+  toolbar $foreground, $background
+  font-size 12px
+  
+  .position
     display flex
-    justify-content space-between
-    align-content stretch
-    box-shadow: 0 -4px 4px rgba(0,0,0,.1)
-    toolbar $foreground, $background
-    font-size 12px
+    flex-flow column
+    justify-content center
     
-    .position
-      display flex
-      flex-flow column
-      justify-content center
-      
-    .devTools
-      display flex
-      justify-content center
-      flex 1 0 auto
-      
-      a
-        cursor default
-        padding-left 15px
-      
-    .selectors
-      position absolute
-      right 0
-      bottom 0
-      height 26px
-      
-      select
-        margin-top 2px
-        border none
-        width 150px
-        background $background
-        color $foreground
-        -webkit-appearance none
-        height 22px
-        padding 0
-        border-radius 0
+  .devTools
+    display flex
+    justify-content center
+    flex 1 0 auto
+    
+    a
+      cursor default
+      padding-left 15px
+    
+  .selectors
+    position absolute
+    right 0
+    bottom 0
+    height 26px
+    
+    select
+      margin-top 2px
+      border none
+      width 150px
+      background $background
+      color $foreground
+      -webkit-appearance none
+      height 22px
+      padding 0
+      border-radius 0
     
 ::-webkit-scrollbar
   width 15px

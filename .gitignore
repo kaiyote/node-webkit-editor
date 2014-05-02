@@ -2,6 +2,7 @@
 .project
 .settings
 .idea
+**.nwproj
 
 node-webkit-editor
 manifest.mf

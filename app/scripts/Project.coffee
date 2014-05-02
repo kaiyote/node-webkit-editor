@@ -5,7 +5,7 @@ FileNode =
   view: (ctrl) ->
     m '.tree.file', [
       m 'span',
-          onclick: -> NWEditor.Editor.loadFile '' + NWEditor.FS.readFileSync(ctrl.file), ctrl.file, true, true
+          onclick: -> NWEditor.Editor.LoadFile ctrl.file, true, true
         , NWEditor.Path.basename ctrl.file
     ]
 
@@ -15,10 +15,10 @@ DirectoryTree =
       @loaded = false
       
     expand: ->
-      do @root.loadChildren
+      do @root.LoadChildren
       
     collapse: ->
-      do @root.clear
+      do @root.Clear
       
   view: (ctrl) ->
     m '.tree', [
@@ -48,7 +48,7 @@ ProjectTree =
       for path in @project.directories
         unless(_.find @directoryListing, (dir) -> dir.root is path)
           directory = new NWEditor.Directory path
-          do directory.loadChildren
+          do directory.LoadChildren
           @directoryListing.push directory
       
   view: (ctrl) -> [
@@ -69,7 +69,7 @@ ProjectTree =
           unless _.find(ctrl.project.directories, (existingPath) -> existingPath is projectPath)
             ctrl.project.directories.push projectPath
             directory = new NWEditor.Directory projectPath
-            do directory.loadChildren
+            do directory.LoadChildren
             ctrl.directoryListing.push directory
     m 'input#saveProject',
         type: 'file'
