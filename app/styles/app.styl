@@ -86,58 +86,56 @@ input[type='file']
   flex-flow row
   
   .project
-    display flex
-    flex 0 0 auto
     background linear-gradient(to right, mix($background, $foreground, 85%), mix($background, $foreground, 80%))
     color mix($foreground, $background, 80%)
-    flex-flow column
-    align-items baseline
     overflow-y auto
     overflow-x hidden
     width 200px
     transition width .3s ease
+    font-size 11px
+    display block
     
     &.collapsed
       width 0
       
-    .project-name
-      display flex
-      flex 0 1 auto
-      opacity 1
-      white-space nowrap
-          
     .tree
-      display flex
-      flex-flow column
-      flex 0 1 auto
-      opacity 1
+      list-style-type none
+      margin 0
       white-space nowrap
-      font-size 12px
-      cursor pointer
+      padding-left 7px
+      display none
       
-      .tree-container
-        display flex
-        flex-flow row
-        flex 0 1 auto
+      &.expanded
+      &.root
+        display block
         
-        span
-          width 100%
-          z-index 1
+      &.expanded
+        border-left 1px dashed mix($foreground, $background, 40%)
+      
+      .file
+        color $foreground
+        padding-left 6px
+        cursor pointer
+      
+      .directory
+        cursor pointer
         
         .expander
-          transition -webkit-transform .5s ease
+          display inline-block
+          position relative
+          left -3px
           transform rotate(0deg)
-          font-weight bold
-        
+          transition -webkit-transform .3s ease
+          
           &.expanded
             transform rotate(90deg)
-      
-      .tree
-        padding-left 10px
         
-        &.file
-          color $foreground
-          padding-left 24px
+      span
+        width 100%
+        display inline-block
+        
+        &:hover
+          background mix($foreground, $background, 25%)
   
   .container
     display flex

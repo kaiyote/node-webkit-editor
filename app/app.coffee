@@ -116,12 +116,10 @@ NWEditor.Directory = class
     @loaded = false
     
   Clear: ->
-    @files = []
-    @directories = []
     @loaded = false
     
   LoadChildren: ->
-    unless @loaded
+    unless @directories.length
       files = NWEditor.FS.readdirSync @root
       for file in files
         if file[0] isnt '.'
@@ -131,7 +129,7 @@ NWEditor.Directory = class
             @directories.push new NWEditor.Directory filePath
           else
             @files.push filePath
-      @loaded = true
+    @loaded = true
   
 #clear off any listeners that might be hanging around across a refresh
 NWEditor.Window.removeAllListeners 'on'

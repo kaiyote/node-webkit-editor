@@ -22,10 +22,10 @@ Current Working Features
 - Themes
 - Syntax Highlighting
 - Cross-Session state
+- Project/Tree-View
 
 Yet-to-be-implemented Features
 =============================
-- Project/Tree-View
 - Menus
 - Settings
 - Integrated Consoles

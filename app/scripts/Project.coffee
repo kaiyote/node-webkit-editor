@@ -3,7 +3,7 @@ FileNode =
     constructor: (@file) ->
       
   view: (ctrl) ->
-    m '.tree.file', [
+    m 'li.file', [
       m 'span',
           onclick: -> NWEditor.LoadFile ctrl.file, true, true
         , NWEditor.Path.basename ctrl.file
@@ -12,28 +12,29 @@ FileNode =
 DirectoryTree =
   controller: class
     constructor: (@root) ->
-      @loaded = false
       
     expand: ->
       do @root.LoadChildren
       
-    collapse: ->
+    collapse: =>
       do @root.Clear
       
   view: (ctrl) ->
-    m '.tree', [
-      m '.tree-container', [
-        m '.expander',
-            class: if ctrl.root.loaded then 'expanded' else ''
-          , '>'
-        m 'span',
-          onclick: -> if ctrl.root.loaded then do ctrl.collapse else do ctrl.expand
-        , m.trust '&nbsp;' +ctrl.root.name
+    m 'li.directory', [
+      m '.expander',
+        class: if ctrl.root.loaded then 'expanded' else ''
+      , '>'
+      m 'span',
+        onclick: -> if ctrl.root.loaded then do ctrl.collapse else do ctrl.expand
+      , m.trust ctrl.root.name
+      m 'ul.tree',
+          class: if ctrl.root.loaded then 'expanded' else ''
+        , [
+          ctrl.root.directories.map (directory) ->
+            new DirectoryTree.view(new DirectoryTree.controller directory)
+          ctrl.root.files.map (file) ->
+            new FileNode.view(new FileNode.controller file)
       ]
-      ctrl.root.directories.map (directory) ->
-        new DirectoryTree.view(new DirectoryTree.controller directory)
-      ctrl.root.files.map (file) ->
-        new FileNode.view(new FileNode.controller file)
     ]
 
 ProjectTree =
@@ -52,8 +53,10 @@ ProjectTree =
           @directoryListing.push directory
       
   view: (ctrl) -> [
-    do ctrl.populate && ctrl.directoryListing.map (directory) ->
-      new DirectoryTree.view(new DirectoryTree.controller directory)
+    m 'ul.tree.root', [
+      do ctrl.populate && ctrl.directoryListing.map (directory) ->
+        new DirectoryTree.view(new DirectoryTree.controller directory)
+    ]
     m 'input#addDirectory',
         type: 'file'
         nwdirectory: true
