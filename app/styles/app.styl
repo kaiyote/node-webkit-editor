@@ -110,7 +110,7 @@ input[type='file']
         display block
         
       &.expanded
-        border-left 1px dashed mix($foreground, $background, 40%)
+        border-left 1px solid rgba(mix($foreground, $background, 40%), .6)
       
       .file
         color $foreground
@@ -149,24 +149,32 @@ input[type='file']
     
     .tabs
       display flex
-      flex 0 1 30px
+      justify-content flex-start
+      padding 2px 2px 0 0
       background linear-gradient(to bottom, mix($background, #888, 80%), mix($background, #888, 50%))
-      flex-flow row
-      cursor default
       
       .tab
+        display flex
+        justify-content space-between
+        align-items stretch
+        max-width 200px
+        margin-right 3px
+        border-radius 2px 2px 0 0
+        padding 0
+        flex 1 1 auto
+        position relative
         color mix($foreground, $background, 70%)
         background linear-gradient(to bottom, mix($background, #888, 70%), mix($background, #888, 75%))
         font-size 12px
-        margin 0 2px
         vertical-align middle
-        line-height 28px
-        display flex
-        flex-flow row
+        line-height 24px
         
-        span
-          flex-grow 1
-          padding 0 10px
+        .label
+          cursor default
+          padding 7px 0 0 6px
+          white-space nowrap
+          text-overflow ellipses
+          overflow hidden
         
         &.active
           border-bottom solid 5px $accent
@@ -181,6 +189,7 @@ input[type='file']
           padding 0 2px
           margin-right 8px
           vertical-align middle
+          align-self center
           
           &:hover
             color $foreground

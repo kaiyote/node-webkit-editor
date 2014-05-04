@@ -28,10 +28,10 @@ Tabs =
   
   view: (ctrl) ->
     NWEditor.Sessions.map (session, index) ->
-      m '.tab',
+      m 'span.tab',
           class: if ctrl.isActive session then 'active' else ''
         , [
-          m 'span',
+          m 'a.label',
               onclick: () -> ctrl.update session
             , ctrl.filename session.path
           m 'a.status',
