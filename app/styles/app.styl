@@ -168,13 +168,16 @@ input[type='file']
         font-size 12px
         vertical-align middle
         line-height 24px
+        border-bottom solid 5px mix($background, #888, 75%)
+        cursor default
         
         .label
-          cursor default
-          padding 7px 0 0 6px
+          padding-left 6px
           white-space nowrap
           text-overflow ellipses
           overflow hidden
+          align-self center
+          vertical-align middle
         
         &.active
           border-bottom solid 5px $accent
