@@ -22,6 +22,7 @@ NWEditor.LoadFile = (path, save, activate) ->
     session = currentSession
     
   session.path = path
+  session.setUndoManager new ace.UndoManager
   # close any file watcher we currently have
   do session.watcher?.close
   session.watcher = NWEditor.FS.watch path, (event, filename) ->
