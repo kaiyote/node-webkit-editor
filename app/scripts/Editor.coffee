@@ -13,7 +13,6 @@ Editor =
         
         NWEditor.Editor.setTheme @state.theme || 'ace/theme/chrome'
         if @state.files.length then NWEditor.LoadFile file, false, true for file in @state.files else do NWEditor.NewFile
-        if @state.project then NWEditor.Project.get().Load @state.project
     
   view: (ctrl) -> [
     m '.tabs', [

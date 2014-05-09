@@ -43,6 +43,9 @@ ProjectTree =
       @collapsed = true
       @project = do NWEditor.Project.get
       @state = do NWEditor.State.get
+      if @state.project then @project.Load @state.project
+      if !@project.directories.length
+        document.querySelector('.project').classList.add 'collapsed'
       @directoryListing = []
       
     populate: ->
@@ -67,6 +70,7 @@ ProjectTree =
             directory = new NWEditor.Directory projectPath
             do directory.LoadChildren
             ctrl.directoryListing.push directory
+            document.querySelector('.project').classList.remove 'collapsed'
     m 'input#saveProject',
         type: 'file'
         nwsaveas: ''

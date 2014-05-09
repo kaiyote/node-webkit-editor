@@ -1,4 +1,6 @@
 'use strict'
+watchProjectTree = false
+
 NWEditor = {}
 NWEditor.FS = require 'fs'
 NWEditor.Path = require 'path'
@@ -115,22 +117,40 @@ NWEditor.Directory = class
     @directories = []
     @name = NWEditor.Path.basename root
     @loaded = false
+    if watchProjectTree
+      watchFunction = _.throttle (event, filename) =>
+        do @LoadChildren
+      , 2000, trailing: false
+      @watcher = NWEditor.FS.watch @root, watchFunction
     
   Clear: ->
     @loaded = false
     
   LoadChildren: ->
-    unless @directories.length
-      files = NWEditor.FS.readdirSync @root
-      for file in files
-        if file[0] isnt '.'
-          filePath = NWEditor.Path.join @root, file
-          stat = NWEditor.FS.statSync filePath
-          if do stat.isDirectory
-            @directories.push new NWEditor.Directory filePath
-          else
-            @files.push filePath
-    @loaded = true
+    d = do require('domain').create
+    d.on 'error', (err) ->
+      #the only error i've ever seen here is a "i can't find the folder" error
+      #i can't seem to catch them with a try/catch, and a global handler is
+      #less than optimal, so we will handle it locally here by doing nothing
+    d.run =>
+      do m.startComputation
+      NWEditor.FS.readdir @root, (err, files) =>
+        if !err
+          files = files.map (file) => NWEditor?.Path.join(@root, file)
+          @directories = _.reject @directories, (dir) ->
+            files.indexOf(dir.root) is -1
+          @files = _.reject @files, (file) ->
+            files.indexOf(file) is -1
+          for file in files
+            stat = NWEditor.FS.statSync file
+            if do stat.isDirectory
+              @directories.push new NWEditor.Directory file unless _.find @directories, (dir) -> dir.root is file
+            else
+              @files.push file unless _.find @files, (existing) -> existing is file
+          @directories = _.sortBy @directories, (directory) -> do directory.root.toLowerCase
+          @files = _.sortBy @files, (file) -> do file.toLowerCase
+          @loaded = true
+        do m.endComputation
   
 #clear off any listeners that might be hanging around across a refresh
 NWEditor.Window.removeAllListeners 'on'

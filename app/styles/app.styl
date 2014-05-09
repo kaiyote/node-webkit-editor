@@ -109,6 +109,11 @@ input[type='file']
       &.root
         display block
         
+      &.root > li > span
+        color $foreground
+        font-weight bold
+        font-size 12px
+        
       &.expanded
         border-left 1px solid rgba(mix($foreground, $background, 40%), .6)
       
