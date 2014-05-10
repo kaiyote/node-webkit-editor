@@ -1,12 +1,19 @@
 Menubar =
   controller: class
     constructor: ->
+      document.body.onclick = (evt) ->
+        document.querySelector('ul.menu.active')?.classList.remove 'active' unless evt.target.webkitMatchesSelector '.menubar *'
       
-    toggleMenu: (evt) ->
+    toggleMenu: (evt) =>
       target = evt.target.nextSibling
       applyActive = !target.classList.contains 'active'
       document.querySelector('ul.menu.active')?.classList.remove 'active'
       target.classList.add 'active' if applyActive
+      
+    toggleMenuMotion: (evt) =>
+      if document.querySelector('ul.menu.active')?
+        document.querySelector('ul.menu.active')?.classList.remove 'active'
+        evt.target.nextSibling?.classList.add 'active'
     
     runCommand: (command) ->
       NWEditor.Editor.execCommand command
@@ -18,6 +25,7 @@ Menubar =
         m 'li', [
           m 'span',
             onclick: ctrl.toggleMenu
+            onmousemove: ctrl.toggleMenuMotion
           , item.name
           m 'ul.menu', [
             item.subMenu.map (subItem) ->
