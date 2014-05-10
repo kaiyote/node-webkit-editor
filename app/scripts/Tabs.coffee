@@ -33,6 +33,7 @@ Tabs =
         , [
           m 'a.label',
               onclick: () -> ctrl.update session
+              title: session.path
             , ctrl.filename session.path
           m 'a.status',
               onclick: () -> ctrl.close session

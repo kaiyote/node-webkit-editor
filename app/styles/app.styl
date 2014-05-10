@@ -94,6 +94,7 @@ input[type='file']
     transition width .3s ease
     font-size 11px
     display block
+    flex-shrink 0
     
     &.collapsed
       width 0
@@ -144,8 +145,10 @@ input[type='file']
   
   .container
     display flex
-    flex 1 0 auto
+    flex-grow 1
     flex-flow column
+    align-items stretch
+    align-content stretch
   
     #editor
       display flex
@@ -154,6 +157,7 @@ input[type='file']
     
     .tabs
       display flex
+      flex 0 0 30px
       justify-content flex-start
       padding 2px 2px 0 0
       background linear-gradient(to bottom, mix($background, #888, 80%), mix($background, #888, 50%))
@@ -179,10 +183,8 @@ input[type='file']
         .label
           padding-left 6px
           white-space nowrap
-          text-overflow ellipses
+          text-overflow ellipsis
           overflow hidden
-          align-self center
-          vertical-align middle
         
         &.active
           border-bottom solid 5px $accent
@@ -194,10 +196,13 @@ input[type='file']
         
         .status
           font-size 14px
-          padding 0 2px
-          margin-right 8px
+          padding-right 4px
+          margin-left 4px
           vertical-align middle
           align-self center
+          text-align center
+          width 18px
+          position relative
           
           &:hover
             color $foreground
