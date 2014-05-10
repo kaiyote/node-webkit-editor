@@ -7,6 +7,7 @@ NWEditor.Path = require 'path'
 NWEditor.Window = do require('nw.gui').Window.get
 NWEditor.Sessions = new Array
 NWEditor.Editor = null
+NWEditor.Domain = require 'domain'
 
 NWEditor.LoadFile = (path, save, activate) ->
   mode = ace.require('ace/ext/modelist').getModeForPath path
@@ -127,7 +128,7 @@ NWEditor.Directory = class
     @loaded = false
     
   LoadChildren: ->
-    d = do require('domain').create
+    d = do NWEditor.Domain.create
     d.on 'error', (err) ->
       #the only error i've ever seen here is a "i can't find the folder" error
       #i can't seem to catch them with a try/catch, and a global handler is

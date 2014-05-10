@@ -18,7 +18,7 @@ commands = [
       NWEditor.FS.writeFile session.path, editor.getValue(), () ->
         session.watcher = NWEditor.FS.watch session.path, (event, filename) ->
           do session.watcher.close
-          editor.loadFile '' + NWEditor.FS.readFileSync(session.path), session.path
+          NWEditor.LoadFile session.path
     else
       do document.querySelector('#saveFile').click
   readOnly: false
@@ -36,7 +36,7 @@ commands = [
     win: 'Ctrl-N'
     mac: 'Command-N'
   exec: (editor) ->
-    do editor.newFile
+    do NWEditor.NewFile
     do m.redraw
   readOnly: false
 ,
