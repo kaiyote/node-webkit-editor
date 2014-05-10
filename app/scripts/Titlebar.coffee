@@ -1,16 +1,23 @@
 Menubar =
   controller: class
     constructor: ->
+      _.mixin deepExtend: underscoreDeepExtend _
+      try
+        @userMenu = JSON.parse '' + NWEditor.FS.readFileSync NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'menu.json'
+      catch
+        @userMenu = {}
+      @menu = _.deepExtend JSON.parse('' + NWEditor.FS.readFileSync 'settings/menu.json'), @userMenu
+      
       document.body.onclick = (evt) ->
         document.querySelector('ul.menu.active')?.classList.remove 'active' unless evt.target.webkitMatchesSelector '.menubar *'
       
-    toggleMenu: (evt) =>
+    toggleMenu: (evt) ->
       target = evt.target.nextSibling
       applyActive = !target.classList.contains 'active'
       document.querySelector('ul.menu.active')?.classList.remove 'active'
       target.classList.add 'active' if applyActive
       
-    toggleMenuMotion: (evt) =>
+    toggleMenuMotion: (evt) ->
       if document.querySelector('ul.menu.active')?
         document.querySelector('ul.menu.active')?.classList.remove 'active'
         evt.target.nextSibling?.classList.add 'active'
@@ -21,19 +28,19 @@ Menubar =
       
   view: (ctrl) ->
     m 'ul.menubar', [
-      menu.map (item) ->
+      _.keys(ctrl.menu).map (item) ->
         m 'li', [
           m 'span',
             onclick: ctrl.toggleMenu
             onmousemove: ctrl.toggleMenuMotion
-          , item.name
+          , item
           m 'ul.menu', [
-            item.subMenu.map (subItem) ->
+            _.keys(ctrl.menu[item]).map (subItem) ->
               m 'li',
-                onclick: () -> ctrl.runCommand subItem.command
+                onclick: () -> ctrl.runCommand ctrl.menu[item][subItem]
               , [
-                m 'span', subItem.name
-                m 'span.shortcut', subItem.shortcut.win
+                m 'span', subItem
+                m 'span.shortcut', NWEditor.Editor?.commands.byName[ctrl.menu[item][subItem]].bindKey.win
               ]
           ]
         ]

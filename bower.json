@@ -10,9 +10,10 @@
     "components"
   ],
   "dependencies": {
-    "components-underscore": "~1.5.2",
     "ace-builds": "~1.1.3",
-    "mithril": "~0.1.10"
+    "mithril": "~0.1.10",
+    "underscore": "~1.6.0",
+    "underscore-deep-extend": "~0.0.3"
   },
   "overrides": {
     "mithril": {

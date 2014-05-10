@@ -16,7 +16,7 @@ DirectoryTree =
     expand: ->
       do @root.LoadChildren
       
-    collapse: =>
+    collapse: ->
       do @root.Clear
       
   view: (ctrl) ->
