@@ -7,6 +7,10 @@
     "Undo": "undo"
   },
   "Settings": {
-    "Menus": "editMenu"
+    "Menus": "editMenu",
+    "User Settings": "editSettings",
+    "Default": {
+        "Menus": "defaultMenus"
+    }
   }
 }

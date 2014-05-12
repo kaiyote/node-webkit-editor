@@ -14,7 +14,7 @@ commands = [
   exec: (editor) ->
     session = do editor.getSession
     unless session.path is 'untitled.txt'
-      do session.watcher?.close
+      do session.watcher?.cloes
       NWEditor.FS.writeFile session.path, editor.getValue(), () ->
         session.watcher = NWEditor.FS.watch session.path, (event, filename) ->
           do session.watcher.close
@@ -59,5 +59,10 @@ commands = [
   name: 'editMenu'
   exec: (editor) ->
     alert 'totally gonna edit the menu soon'
+  readOnly: true
+,
+  name: 'editSettings'
+  exec: (editor) ->
+    alert 'totally gonna edit the user settings soon'
   readOnly: true
 ]

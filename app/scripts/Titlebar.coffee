@@ -40,7 +40,7 @@ Menubar =
                 onclick: () -> ctrl.runCommand ctrl.menu[item][subItem]
               , [
                 m 'span', subItem
-                m 'span.shortcut', NWEditor.Editor?.commands.byName[ctrl.menu[item][subItem]].bindKey?.win
+                m 'span.shortcut', NWEditor.Editor?.commands.byName[ctrl.menu[item][subItem]]?.bindKey?.win
               ]
           ]
         ]
