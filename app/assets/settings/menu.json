@@ -5,5 +5,8 @@
   },
   "Edit": {
     "Undo": "undo"
+  },
+  "Settings": {
+    "Menus": "editMenu"
   }
 }

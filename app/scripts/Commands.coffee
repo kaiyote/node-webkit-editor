@@ -55,4 +55,9 @@ commands = [
   exec: (editor) ->
     document.querySelector('#saveProject').click()
   readOnly: false
+,
+  name: 'editMenu'
+  exec: (editor) ->
+    alert 'totally gonna edit the menu soon'
+  readOnly: true
 ]

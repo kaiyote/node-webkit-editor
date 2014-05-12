@@ -2,7 +2,6 @@ Editor =
   controller: class
     constructor: ->
       @tabsCtrl = new Tabs.controller
-      @projectCtrl = new ProjectTree.controller
       @state = do NWEditor.State.get
       ace.config.set 'workerPath', 'js/workers'
     

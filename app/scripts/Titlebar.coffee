@@ -1,12 +1,12 @@
 Menubar =
   controller: class
     constructor: ->
-      _.mixin deepExtend: underscoreDeepExtend _
       try
-        @userMenu = JSON.parse '' + NWEditor.FS.readFileSync NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'menu.json'
+        userDelta = JSON.parse '' + NWEditor.FS.readFileSync NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'menu.json'
+        @menu = jsondiffpatch.patch JSON.parse('' + NWEditor.FS.readFileSync 'settings/menu.json'), userDelta
       catch
-        @userMenu = {}
-      @menu = _.deepExtend JSON.parse('' + NWEditor.FS.readFileSync 'settings/menu.json'), @userMenu
+        #either the patch file doesn't exist, or it's poorly formed, use default menu
+        @menu = JSON.parse '' + NWEditor.FS.readFileSync 'settings/menu.json'
       
       document.body.onclick = (evt) ->
         document.querySelector('ul.menu.active')?.classList.remove 'active' unless evt.target.webkitMatchesSelector '.menubar *'
@@ -40,7 +40,7 @@ Menubar =
                 onclick: () -> ctrl.runCommand ctrl.menu[item][subItem]
               , [
                 m 'span', subItem
-                m 'span.shortcut', NWEditor.Editor?.commands.byName[ctrl.menu[item][subItem]].bindKey.win
+                m 'span.shortcut', NWEditor.Editor?.commands.byName[ctrl.menu[item][subItem]].bindKey?.win
               ]
           ]
         ]
