@@ -10,7 +10,8 @@
     "Menus": "editMenu",
     "User Settings": "editSettings",
     "Default": {
-        "Menus": "defaultMenus"
+        "Menus": "defaultMenus",
+        "Settings": "defaultSettings"
     }
   }
 }

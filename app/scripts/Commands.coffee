@@ -14,7 +14,7 @@ commands = [
   exec: (editor) ->
     session = do editor.getSession
     unless session.path is 'untitled.txt'
-      do session.watcher?.cloes
+      do session.watcher?.close
       NWEditor.FS.writeFile session.path, editor.getValue(), () ->
         session.watcher = NWEditor.FS.watch session.path, (event, filename) ->
           do session.watcher.close

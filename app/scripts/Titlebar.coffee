@@ -1,3 +1,38 @@
+MenuItem =
+  controller: class
+    constructor: (@parent, @key, @nested) ->
+      
+    runCommand: (command) ->
+      NWEditor.Editor.execCommand command
+      document.querySelector('ul.menu.active')?.classList.remove 'active'
+      
+    expandSubMenu: (evt) ->
+      evt.target.parentElement.lastChild.classList.add 'active'
+      
+    hideSubMenus: ->
+      if !@nested
+        _.each document.querySelectorAll('ul.menu ul.menu.active'), (element) ->
+          element.classList.remove 'active'
+    
+    renderSubMenu: (type, menuItem) ->
+      if type is 'nested'
+        m 'ul.menu', [
+          _.keys(menuItem).map (item) ->
+            new MenuItem.view(new MenuItem.controller menuItem, item, true)
+        ]
+      
+  view: (ctrl) ->
+    menuItem = ctrl.parent[ctrl.key]
+    menuType = if typeof menuItem is 'string' then 'command' else 'nested'
+    m 'li',
+        onclick: () -> if menuType is 'command' then ctrl.runCommand menuItem
+        onmouseover: (evt) -> if menuType is 'nested' then ctrl.expandSubMenu evt else do ctrl.hideSubMenus
+      , [
+        m 'span.label', ctrl.key
+        m 'span.shortcut', if menuType is 'command' then NWEditor.Editor?.commands.byName[menuItem]?.bindKey?.win else '>'
+        ctrl.renderSubMenu menuType, menuItem
+      ]
+
 Menubar =
   controller: class
     constructor: ->
@@ -21,10 +56,6 @@ Menubar =
       if document.querySelector('ul.menu.active')?
         document.querySelector('ul.menu.active')?.classList.remove 'active'
         evt.target.nextSibling?.classList.add 'active'
-    
-    runCommand: (command) ->
-      NWEditor.Editor.execCommand command
-      document.querySelector('ul.menu.active')?.classList.remove 'active'
       
   view: (ctrl) ->
     m 'ul.menubar', [
@@ -36,12 +67,7 @@ Menubar =
           , item
           m 'ul.menu', [
             _.keys(ctrl.menu[item]).map (subItem) ->
-              m 'li',
-                onclick: () -> ctrl.runCommand ctrl.menu[item][subItem]
-              , [
-                m 'span', subItem
-                m 'span.shortcut', NWEditor.Editor?.commands.byName[ctrl.menu[item][subItem]]?.bindKey?.win
-              ]
+              new MenuItem.view(new MenuItem.controller ctrl.menu[item], subItem)
           ]
         ]
     ]
