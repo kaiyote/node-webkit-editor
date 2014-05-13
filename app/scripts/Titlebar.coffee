@@ -7,7 +7,7 @@ MenuItem =
       document.querySelector('ul.menu.active')?.classList.remove 'active'
       
     expandSubMenu: (evt) ->
-      evt.target.parentElement.lastChild.classList.add 'active'
+      evt.target.parentElement.lastChild.classList?.add 'active'
       
     hideSubMenus: ->
       if !@nested

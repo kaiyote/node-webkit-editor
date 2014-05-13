@@ -56,13 +56,16 @@ commands = [
     document.querySelector('#saveProject').click()
   readOnly: false
 ,
-  name: 'editMenu'
-  exec: (editor) ->
-    alert 'totally gonna edit the menu soon'
-  readOnly: true
-,
   name: 'editSettings'
   exec: (editor) ->
     alert 'totally gonna edit the user settings soon'
+  readOnly: true
+,
+  name: 'exit'
+  bindKey:
+    win: 'Ctrl-X'
+    mac: 'Command-X'
+  exec: (editor) ->
+    do NWEditor.Window.close
   readOnly: true
 ]

@@ -1,10 +1,14 @@
 {
   "File": {
     "New File": "newFile",
-    "Open File": "open"
+    "Open": "open",
+    "Save": "save",
+    "Save As": "saveAs",
+    "Exit": "exit"
   },
   "Edit": {
-    "Undo": "undo"
+    "Undo": "undo",
+    "Redo": "redo"
   },
   "Settings": {
     "Menus": "editMenu",
