@@ -48,6 +48,9 @@ li
     border-right 1px solid $foreground
     font-size 12px
     
+    &.mac
+      margin-left 120px
+    
   .menubar
     padding 0
     margin 0
@@ -99,6 +102,22 @@ li
     align-content stretch
     align-items baseline
     padding 0 4px
+    
+    &.mac
+      left 0
+      right auto
+      
+      a:first-child
+        position absolute
+        left 80px
+        
+      a:nth-child(2)
+        position absolute
+        left 40px
+      
+      a:last-child
+        position absolute
+        left 0
     
     a
       width 40px

@@ -8,6 +8,7 @@ NWEditor.Window = do require('nw.gui').Window.get
 NWEditor.Sessions = new Array
 NWEditor.Editor = null
 NWEditor.Domain = require 'domain'
+NWEditor.OS = require 'os'
 
 NWEditor.LoadFile = (path, save, activate) ->
   mode = ace.require('ace/ext/modelist').getModeForPath path

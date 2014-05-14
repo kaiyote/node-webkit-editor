@@ -29,7 +29,7 @@ MenuItem =
         onmouseover: (evt) -> if menuType is 'nested' then ctrl.expandSubMenu evt else do ctrl.hideSubMenus
       , [
         m 'span.label', ctrl.key
-        m 'span.shortcut', if menuType is 'command' then NWEditor.Editor?.commands.byName[menuItem]?.bindKey?.win else '>'
+        m 'span.shortcut', if menuType is 'command' then NWEditor.Editor?.commands.byName[menuItem]?.bindKey?[if do NWEditor.OS.platform is 'darwin' then 'mac' else 'win'] else '>'
         ctrl.renderSubMenu menuType, menuItem
       ]
 
@@ -100,9 +100,13 @@ Titlebar =
       do NWEditor.Window.close
       
   view: (ctrl) -> [
-    m 'b.app-name', 'Node Webkit Editor'
+    m 'b.app-name',
+      class: if do NWEditor.OS.platform is 'darwin' then 'mac' else ''
+    , 'Node Webkit Editor'
     new Menubar.view ctrl.menuCtrl
-    m '.window-controls', [
+    m '.window-controls',
+      class: if do NWEditor.OS.platform is 'darwin' then 'mac' else ''
+    , [
       m 'a', onclick: ctrl.minimize, '-'
       m 'a',
           onclick: -> ctrl.maximize()
