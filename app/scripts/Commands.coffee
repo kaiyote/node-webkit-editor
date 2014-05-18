@@ -63,8 +63,8 @@ commands = [
 ,
   name: 'exit'
   bindKey:
-    win: 'Ctrl-X'
-    mac: 'Command-X'
+    win: 'Ctrl-Q'
+    mac: 'Command-Q'
   exec: (editor) ->
     do NWEditor.Window.close
   readOnly: true
