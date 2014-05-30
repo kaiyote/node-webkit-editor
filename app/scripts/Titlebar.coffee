@@ -58,19 +58,21 @@ Menubar =
         evt.target.nextSibling?.classList.add 'active'
       
   view: (ctrl) ->
-    m 'ul.menubar', [
-      _.keys(ctrl.menu).map (item) ->
-        m 'li', [
-          m 'span',
-            onclick: ctrl.toggleMenu
-            onmousemove: ctrl.toggleMenuMotion
-          , item
-          m 'ul.menu', [
-            _.keys(ctrl.menu[item]).map (subItem) ->
-              new MenuItem.view(new MenuItem.controller ctrl.menu[item], subItem)
+    m '.menubar',
+      class: if do NWEditor.OS.platform is 'darwin' then 'mac' else ''
+    , m 'ul', [
+        _.keys(ctrl.menu).map (item) ->
+          m 'li', [
+            m 'span',
+              onclick: ctrl.toggleMenu
+              onmousemove: ctrl.toggleMenuMotion
+            , item
+            m 'ul.menu', [
+              _.keys(ctrl.menu[item]).map (subItem) ->
+                new MenuItem.view(new MenuItem.controller ctrl.menu[item], subItem)
+            ]
           ]
-        ]
-    ]
+      ]
 
 Titlebar =
   controller: class

@@ -37,9 +37,10 @@ li
   -webkit-app-region drag
   padding 4px 16px
   toolbar $foreground, $background
+  display flex
   flex 0 0 30px
   
-  .menubar, .window-controls
+  ul.menubar, .window-controls
     -webkit-app-region no-drag
     
   .app-name
@@ -49,75 +50,76 @@ li
     font-size 12px
     
     &.mac
-      margin-left 120px
+      order 2
     
   .menubar
-    padding 0
-    margin 0
     font-size 11px
     z-index 99
+    flex-grow 1
     
-    li
-      display inline-block
-      padding 4px 8px
+    &.mac
+      order 3
+    
+    ul
+      flex-shrink 1
+      padding 0
+      margin 0
       
-      span
-        cursor default
-      
-      .menu
-        display none
-        position absolute
-        z-index 999
-        padding 8px 0
-        margin 4px 0 0 -8px
-        background $background
-        min-width 200px
+      li
+        display inline-block
+        padding 4px 8px
         
-        &.active
-          display block
+        span
+          cursor default
+        
+        .menu
+          display none
+          position absolute
+          z-index 999
+          padding 8px 0
+          margin 4px 0 0 -8px
+          background $background
+          min-width 200px
           
-        & > li
-          display flex
-          justify-content space-between
-          position relative
-          padding 0 8px
-          
-          .label
-            flex-grow 1
-          
-          .shortcut
-            color mix($foreground, $background, 70%)
-          
-          &:hover
-            background mix($foreground, $background, 10%)
+          &.active
+            display block
             
-          .menu
-            margin -8px 0 0 8px
+          & > li
+            display flex
+            justify-content space-between
+            position relative
+            padding 0 8px
+            
+            .label
+              flex-grow 1
+            
+            .shortcut
+              color mix($foreground, $background, 70%)
+            
+            &:hover
+              background mix($foreground, $background, 10%)
+              
+            .menu
+              margin -8px 0 0 8px
     
   .window-controls
-    position absolute
-    top 0
-    right 0
     display flex
     align-content stretch
     align-items baseline
-    padding 0 4px
+    margin -6px -20px 0 0
     
     &.mac
-      left 0
-      right auto
+      order 1
+      margin -6px 10px 0 -20px
       
       a:first-child
-        position absolute
-        left 80px
+        order 3
         
       a:nth-child(2)
-        position absolute
-        left 40px
+        order 2
       
       a:last-child
-        position absolute
-        left 0
+        order 1
     
     a
       width 40px
