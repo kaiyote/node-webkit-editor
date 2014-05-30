@@ -5,13 +5,6 @@ Editor =
       @state = do NWEditor.State.get
       ace.config.set 'workerPath', 'js/workers'
       
-      try
-        userDelta = JSON.parse '' + NWEditor.FS.readFileSync NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'settings.json'
-        @settings = jsondiffpatch.patch JSON.parse('' + NWEditor.FS.readFileSync 'settings/settings.json'), userDelta
-      catch
-        #either the patch file doesn't exist, or it's poorly formed, use default settings
-        @settings = JSON.parse '' + NWEditor.FS.readFileSync 'settings/settings.json'
-    
     setup: (element, isInitialized) =>
       unless isInitialized
         NWEditor.Editor = ace.edit element
@@ -19,10 +12,9 @@ Editor =
         
         settingFunctions = ace.require('ace/ext/menu_tools/get_set_functions').getSetFunctions NWEditor.Editor
         
-        _.keys(@settings).forEach (setting) =>
-          settingFunction = _.find settingFunctions, (item) -> item.functionName is "set#{setting.replace ' ', ''}"
-          settingFunction.parentObj[settingFunction.functionName] @settings[setting] if settingFunction
-        
+        NWEditor.Settings.get().applyAceSettings NWEditor.Editor, 'editor'
+        NWEditor.Settings.get().applyAceSettings NWEditor.Editor.renderer, 'renderer'
+          
         NWEditor.Editor.setTheme @state.theme || 'ace/theme/chrome'
         if @state.files.length then NWEditor.LoadFile file, false, true for file in @state.files else do NWEditor.NewFile
     

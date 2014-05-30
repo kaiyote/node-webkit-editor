@@ -1,23 +1,30 @@
 {
-  "Keyboard Handler": "ace",
-  "Animated Scroll": true,
-  "Show Invisibles": false,
-  "Display Indent Guides": true,
-  "Show Print Margin": false,
-  "Print Margin Column": 80,
-  "Show Gutter": true,
-  "Fade Fold Widgets": true,
-  "Highlight Gutter Line": true,
-  "HScrollBar Always Visible": false,
-  "VScrollBar Always Visible": false,
-  "Cursor Style": "slim",
-  "Use Soft Tabs": true,
-  "Tab Size": 2,
-  "New Line Mode": "auto",
-  "Use Worker": true,
-  "Use Wrap Mode": false,
-  "Wrap Limit": 80,
-  "Highlight Active Line": true,
-  
-  "Watch Project Tree": false
+  "renderer": {
+    "Animated Scroll": true,
+    "Show Invisibles": false,
+    "Show Print Margin": false,
+    "Print Margin Column": 80,
+    "Display Indent Guides": true,
+    "Show Gutter": true,
+    "Fade Fold Widgets": true,
+    "Highlight Gutter Line": true,
+    "HScrollBar Always Visible": false,
+    "VScrollBar Always Visible": false,
+    "Cursor Style": "slim"
+  },
+  "session": {
+    "Use Soft Tabs": true,
+    "Tab Size": 2,
+    "New Line Mode": "auto",
+    "Use Worker": true,
+    "Use Wrap Mode": false,
+    "Wrap Limit": 80
+  },
+  "editor": {
+    "Highlight Active Line": true,
+    "Highlight Selected Word": true
+  },
+  "user": {
+    "Watch Project Tree": false
+  }
 }

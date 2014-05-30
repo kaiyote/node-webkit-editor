@@ -1,6 +1,4 @@
 'use strict'
-watchProjectTree = false
-
 NWEditor = {}
 NWEditor.FS = require 'fs'
 NWEditor.Path = require 'path'
@@ -50,11 +48,14 @@ NWEditor.LoadFile = (path, save, activate) ->
                                   .value()
     do NWEditor.State.get().Write
     
+  NWEditor.Settings.get().applyAceSettings session, 'session'
+    
 NWEditor.NewFile = ->
   session = new ace.EditSession '', 'ace/mode/text'
   session.path = 'untitled.txt'
   NWEditor.Editor.setSession session
   NWEditor.Sessions.push session
+  NWEditor.Settings.get().applyAceSettings session, 'session'
 
 NWEditor.State = class
   instance = null
@@ -83,6 +84,34 @@ NWEditor.State = class
         #doesn't exist, so make it
         NWEditor.FS.mkdirSync NWEditor.Path.dirname _path
       NWEditor.FS.writeFile _path, JSON.stringify this
+      
+NWEditor.Settings = class
+  instance = null
+  @get: ->
+    instance ?= new Settings
+    
+  class Settings
+    _basePath = ''
+    _userPath = ''
+    constructor: ->
+      _basePath = 'settings/settings.json'
+      _userPath = NWEditor.Path.join process.env.HOME || process.env.USERPROFILE, '.nweditor', 'settings.json'
+      
+      try
+        userDelta = JSON.parse '' + NWEditor.FS.readFileSync _userPath
+        settings = jsondiffpatch.patch JSON.parse('' + NWEditor.FS.readFileSync _basePath), userDelta
+      catch
+        #either the patch file doesn't exist, or it's poorly formed, use default settings
+        settings = JSON.parse '' + NWEditor.FS.readFileSync _basePath
+        
+      @editor = settings.editor
+      @session = settings.session
+      @user = settings.user
+      @renderer = settings.renderer
+      
+    applyAceSettings: (target, objKey) ->
+      _.keys(@[objKey]).forEach (setting) =>
+        target["set#{setting.replace /\s/g, ''}"] @[objKey][setting]
       
 NWEditor.Project = class
   instance = null
@@ -119,7 +148,7 @@ NWEditor.Directory = class
     @directories = []
     @name = NWEditor.Path.basename root
     @loaded = false
-    if watchProjectTree
+    if NWEditor.Settings.get().user["Watch Project Tree"]
       watchFunction = _.throttle (event, filename) =>
         do @LoadChildren
       , 2000, trailing: false
