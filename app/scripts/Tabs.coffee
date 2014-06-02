@@ -19,7 +19,7 @@ Tabs =
         if NWEditor.Sessions.length isnt 0
           NWEditor.Editor.setSession _.last(NWEditor.Sessions)
         else
-          do NWEditor.Editor.newFile
+          do NWEditor.NewFile
       @state.files = _.chain NWEditor.Sessions
                                     .filter (session) -> session.path isnt 'untitled.txt'
                                     .map (session) -> session.path
